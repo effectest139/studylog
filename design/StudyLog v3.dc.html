@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>body{margin:0;background:#E5E7EB;font-family:'Malgun Gothic','맑은 고딕','Apple SD Gothic Neo',sans-serif;color:#111827}a{color:#4F46E5}a:hover{color:#3730A3}</style>
+</helmet>
+<section style="padding:64px;display:flex;flex-direction:column;gap:48px;font-family:'Malgun Gothic','맑은 고딕','Apple SD Gothic Neo',sans-serif">
+  <div style="display:flex;flex-direction:column;gap:16px;max-width:1164px">
+    <div style="font-size:32px;font-weight:700">StudyLog 데스크톱 화면 v3</div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px 28px;font-size:14px;color:#374151;background:#FFFFFF;border-radius:12px;padding:20px 24px">
+      <div><b>창</b> 1100×700 · 사이드바 200</div>
+      <div><b>여백</b> 콘텐츠 40 · 카드 간격 16~24</div>
+      <div><b>모서리</b> 카드 12 · 버튼·입력칸·대화상자 8</div>
+      <div><b>테두리</b> 1px #E5E7EB · 대화상자 1px #9CA3AF</div>
+      <div><b>위험</b> #DC2626</div>
+      <div><b>대화상자</b> CTkToplevel · 모달(grab_set) · 창 가운데</div>
+      <div><b>버튼 순서</b> 취소 왼쪽 · 확인 오른쪽</div>
+      <div><b>키</b> Enter 확인 · Esc 닫기 · 공부 중 Space 일시정지/재개</div>
+      <div><b>비활성 버튼</b> 배경 #E5E7EB · 글자 #9CA3AF</div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:64px">
+
+    <!-- 00-1 -->
+    <div data-screen-label="00-1 첫 실행 이름" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">00-1 첫 실행 · 이름 입력</div>
+      <div style="width:1100px;height:700px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:36px;height:36px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center">S</div>
+          <div style="font-size:22px;font-weight:700">StudyLog</div>
+        </div>
+        <div style="width:520px;box-sizing:border-box;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:40px;display:flex;flex-direction:column;gap:28px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="flex:1;display:flex;gap:6px"><div style="flex:1;height:6px;border-radius:3px;background:#4F46E5"></div><div style="flex:1;height:6px;border-radius:3px;background:#E5E7EB"></div></div>
+            <div style="font-size:14px;font-weight:700;color:#4F46E5">1/2</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:24px;font-weight:700">반가워요! 이름을 알려 주세요</div>
+            <div style="font-size:14px;color:#6B7280">홈 인사말과 프로필에 표시돼요</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:14px;font-weight:700">이름</div>
+            <div style="height:48px;box-sizing:border-box;border:2px solid #4F46E5;border-radius:8px;padding:0 16px;display:flex;align-items:center;gap:2px;font-size:16px">김민지<div style="width:2px;height:20px;background:#4F46E5"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:#6B7280"><div>1~10자</div><div>3/10</div></div>
+          </div>
+          <div style="height:52px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center">다음</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 00-2 -->
+    <div data-screen-label="00-2 첫 실행 과목" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">00-2 첫 실행 · 과목 등록</div>
+      <div style="width:1100px;height:700px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <div style="width:940px;box-sizing:border-box;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:40px;display:flex;flex-direction:column;gap:28px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="flex:1;display:flex;gap:6px"><div style="flex:1;height:6px;border-radius:3px;background:#4F46E5"></div><div style="flex:1;height:6px;border-radius:3px;background:#4F46E5"></div></div>
+            <div style="font-size:14px;font-weight:700;color:#4F46E5">2/2</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:24px;font-weight:700">공부할 과목을 등록해 주세요</div>
+            <div style="font-size:14px;color:#6B7280">최대 10개 · 나중에 홈에서 추가하거나 바꿀 수 있어요</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px">
+            <sc-for list="{{ subjects4 }}" as="s" hint-placeholder-count="4">
+              <div style="position:relative;height:88px;box-sizing:border-box;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;display:flex;align-items:center;gap:14px;overflow:hidden">
+                <div style="width:6px;align-self:stretch;background:{{ s.color }}"></div>
+                <div style="font-size:16px;font-weight:700">{{ s.name }}</div>
+                <div style="position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:6px;background:#F3F4F6;color:#6B7280;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">⋯</div>
+              </div>
+            </sc-for>
+            <div style="height:88px;box-sizing:border-box;background:#F9FAFB;border:1px solid #D1D5DB;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#9CA3AF"><div style="font-size:15px">+ 과목 추가</div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:12px">
+            <div style="width:120px;height:52px;box-sizing:border-box;border-radius:8px;border:1px solid #E5E7EB;font-size:16px;display:flex;align-items:center;justify-content:center">이전</div>
+            <div style="width:200px;height:52px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center">시작하기</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 00-2E -->
+    <div data-screen-label="00-2E 첫 실행 과목 없음" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">00-2E 첫 실행 · 과목 0개 (시작하기 비활성)</div>
+      <div style="width:1100px;height:700px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <div style="width:940px;box-sizing:border-box;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:40px;display:flex;flex-direction:column;gap:28px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="flex:1;display:flex;gap:6px"><div style="flex:1;height:6px;border-radius:3px;background:#4F46E5"></div><div style="flex:1;height:6px;border-radius:3px;background:#4F46E5"></div></div>
+            <div style="font-size:14px;font-weight:700;color:#4F46E5">2/2</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:24px;font-weight:700">공부할 과목을 등록해 주세요</div>
+            <div style="font-size:14px;color:#6B7280">최대 10개 · 나중에 홈에서 추가하거나 바꿀 수 있어요</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px">
+            <div style="height:88px;box-sizing:border-box;background:#F9FAFB;border:1px solid #D1D5DB;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#9CA3AF"><div style="font-size:15px">+ 과목 추가</div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+            <div style="width:120px;height:52px;box-sizing:border-box;border-radius:8px;border:1px solid #E5E7EB;font-size:16px;display:flex;align-items:center;justify-content:center">이전</div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+              <div style="width:200px;height:52px;border-radius:8px;background:#E5E7EB;color:#9CA3AF;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center">시작하기</div>
+              <div style="font-size:13px;color:#6B7280">과목을 1개 이상 추가해 주세요</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 01 홈 -->
+    <div data-screen-label="01 홈" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">01 홈 · 과목 4개</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="home" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:26px;font-weight:700">안녕하세요, 김민지님</div>
+              <div style="font-size:14px;color:#6B7280">2026년 9월 23일 수요일</div>
+            </div>
+            <div style="height:36px;padding:0 16px;border-radius:18px;background:#14B8A6;color:#FFFFFF;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:4px;background:#FFFFFF"></div>연속 5일 공부 중</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:16px">
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:6px"><div style="font-size:14px;color:#6B7280">오늘 공부 시간</div><div style="font-size:28px;font-weight:700">1시간 25분</div></div>
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:6px"><div style="font-size:14px;color:#6B7280">이번 주 합계</div><div style="font-size:28px;font-weight:700">8시간 40분</div></div>
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:14px;color:#6B7280">주간 목표</div><div style="font-size:13px;color:#6B7280"><b style="color:#4F46E5;font-size:18px">72%</b> · 8시간 40분 / 12시간</div></div>
+              <div style="height:12px;border-radius:6px;background:#EEF2FF"><div style="width:72%;height:12px;border-radius:6px;background:#4F46E5"></div></div>
+              <div style="font-size:12px;color:#6B7280">목표까지 3시간 20분 남았어요</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <div style="display:flex;align-items:baseline;gap:8px"><div style="font-size:18px;font-weight:700">과목</div><div style="font-size:13px;color:#6B7280">4/10</div></div>
+              <div style="font-size:13px;color:#6B7280">카드를 누르면 바로 공부가 시작돼요</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px">
+              <sc-for list="{{ subjectsHome }}" as="s" hint-placeholder-count="4">
+                <div style="position:relative;height:88px;box-sizing:border-box">
+                  <sc-if value="{{ s.idle }}" hint-placeholder-val="{{ true }}">
+                    <div style="height:88px;box-sizing:border-box;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;display:flex;align-items:center;gap:14px;overflow:hidden">
+                      <div style="width:6px;align-self:stretch;background:{{ s.color }}"></div>
+                      <div style="font-size:16px;font-weight:700">{{ s.name }}</div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ s.hover }}" hint-placeholder-val="{{ false }}">
+                    <div style="position:relative;height:88px;box-sizing:border-box;background:{{ s.tint }};border:2px solid {{ s.color }};border-radius:12px;display:flex;align-items:center;gap:13px;overflow:hidden">
+                      <div style="width:6px;align-self:stretch;background:{{ s.color }}"></div>
+                      <div style="font-size:16px;font-weight:700;color:#111827">{{ s.name }}</div>
+                      <div style="position:absolute;right:11px;bottom:9px;font-size:12px;font-weight:700;color:{{ s.dark }}">시작하기 →</div>
+                      <div style="position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:6px;background:#FFFFFF;border:1px solid {{ s.color }};box-sizing:border-box;color:{{ s.dark }};font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">⋯</div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+              <div style="height:88px;box-sizing:border-box;background:#F9FAFB;border:1px solid #D1D5DB;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#9CA3AF"><div style="font-size:15px">+ 과목 추가</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 01-H 과목 카드 상태 -->
+    <div data-screen-label="01-H 과목 카드 상태" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">01-H 홈 과목 카드 · 기본 / 마우스 올림</div>
+      <div style="width:1100px;box-sizing:border-box;background:#F9FAFB;border-radius:12px;outline:1px solid #D1D5DB;padding:40px;display:flex;flex-direction:column;gap:32px">
+        <div style="display:grid;grid-template-columns:repeat(4,151px);gap:16px 24px">
+          <sc-for list="{{ hoverDemo }}" as="s" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="font-size:14px;font-weight:700;color:#374151">{{ s.label }}</div>
+              <div style="position:relative;height:88px;box-sizing:border-box">
+                <sc-if value="{{ s.idle }}" hint-placeholder-val="{{ true }}">
+                  <div style="height:88px;box-sizing:border-box;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;display:flex;align-items:center;gap:14px;overflow:hidden">
+                    <div style="width:6px;align-self:stretch;background:{{ s.color }}"></div>
+                    <div style="font-size:16px;font-weight:700">{{ s.name }}</div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ s.hover }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:relative;height:88px;box-sizing:border-box;background:{{ s.tint }};border:2px solid {{ s.color }};border-radius:12px;display:flex;align-items:center;gap:13px;overflow:hidden">
+                      <div style="width:6px;align-self:stretch;background:{{ s.color }}"></div>
+                      <div style="font-size:16px;font-weight:700;color:#111827">{{ s.name }}</div>
+                      <div style="position:absolute;right:11px;bottom:9px;font-size:12px;font-weight:700;color:{{ s.dark }}">시작하기 →</div>
+                      <div style="position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:6px;background:#FFFFFF;border:1px solid {{ s.color }};box-sizing:border-box;color:{{ s.dark }};font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">⋯</div>
+                    </div>
+                </sc-if>
+              </div>
+              <div style="font-family:Consolas,monospace;font-size:11px;color:#6B7280">{{ s.spec }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:14px;font-weight:700;color:#374151">색 12개 · 마우스 올림 배경·테두리·"시작하기" 글자색</div>
+          <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px">
+            <sc-for list="{{ paletteFg }}" as="p" hint-placeholder-count="12">
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <div style="height:44px;box-sizing:border-box;border-radius:8px;background:{{ p.tint }};border:2px solid {{ p.c }};color:{{ p.dark }};font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:flex-end;padding:0 10px">시작하기 →</div>
+                <div style="font-family:Consolas,monospace;font-size:11px;color:#6B7280;line-height:1.5">{{ p.c }}<br>배경 {{ p.tint }}<br>글자 {{ p.dark }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="font-size:13px;color:#6B7280;line-height:1.6">과목 이름 위치와 색은 두 상태에서 같아요. 테두리가 2px로 두꺼워지는 만큼 띠 뒤 간격을 1px 줄여요. 연한 배경 = 과목 색 10% + 흰색 90%. "시작하기 →" 글자색 = 과목 색을 연한 배경과 명도 대비 4.5:1 이상이 될 때까지 어둡게 한 색. ⋯ 버튼은 마우스를 올렸을 때만 보여요.</div>
+      </div>
+    </div>
+
+    <!-- 01-F 홈 과목 10개 -->
+    <div data-screen-label="01-F 홈 과목 10개" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">01-F 홈 · 과목 10개 (추가 슬롯 없음)</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="home" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:26px;font-weight:700">안녕하세요, 김민지님</div>
+              <div style="font-size:14px;color:#6B7280">2026년 9월 23일 수요일</div>
+            </div>
+            <div style="height:36px;padding:0 16px;border-radius:18px;background:#14B8A6;color:#FFFFFF;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:4px;background:#FFFFFF"></div>연속 5일 공부 중</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:16px">
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:6px"><div style="font-size:14px;color:#6B7280">오늘 공부 시간</div><div style="font-size:28px;font-weight:700">1시간 25분</div></div>
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:6px"><div style="font-size:14px;color:#6B7280">이번 주 합계</div><div style="font-size:28px;font-weight:700">8시간 40분</div></div>
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:14px;color:#6B7280">주간 목표</div><div style="font-size:13px;color:#6B7280"><b style="color:#4F46E5;font-size:18px">72%</b> · 8시간 40분 / 12시간</div></div>
+              <div style="height:12px;border-radius:6px;background:#EEF2FF"><div style="width:72%;height:12px;border-radius:6px;background:#4F46E5"></div></div>
+              <div style="font-size:12px;color:#6B7280">목표까지 3시간 20분 남았어요</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <div style="display:flex;align-items:baseline;gap:8px"><div style="font-size:18px;font-weight:700">과목</div><div style="font-size:13px;color:#6B7280">10/10 · 최대 10개</div></div>
+              <div style="font-size:13px;color:#6B7280">카드를 누르면 바로 공부가 시작돼요</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px">
+              <sc-for list="{{ subjects10 }}" as="s" hint-placeholder-count="10">
+                <div style="position:relative;height:88px;box-sizing:border-box">
+                  <sc-if value="{{ s.idle }}" hint-placeholder-val="{{ true }}">
+                    <div style="height:88px;box-sizing:border-box;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;display:flex;align-items:center;gap:14px;overflow:hidden">
+                      <div style="width:6px;align-self:stretch;background:{{ s.color }}"></div>
+                      <div style="font-size:16px;font-weight:700">{{ s.name }}</div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ s.hover }}" hint-placeholder-val="{{ false }}">
+                    <div style="position:relative;height:88px;box-sizing:border-box;background:{{ s.tint }};border:2px solid {{ s.color }};border-radius:12px;display:flex;align-items:center;gap:13px;overflow:hidden">
+                      <div style="width:6px;align-self:stretch;background:{{ s.color }}"></div>
+                      <div style="font-size:16px;font-weight:700;color:#111827">{{ s.name }}</div>
+                      <div style="position:absolute;right:11px;bottom:9px;font-size:12px;font-weight:700;color:{{ s.dark }}">시작하기 →</div>
+                      <div style="position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:6px;background:#FFFFFF;border:1px solid {{ s.color }};box-sizing:border-box;color:{{ s.dark }};font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">⋯</div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 01-E 홈 빈 화면 -->
+    <div data-screen-label="01-E 홈 빈 화면" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">01-E 홈 · 기록·과목 없음</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="home" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:26px;font-weight:700">안녕하세요, 김민지님</div>
+              <div style="font-size:14px;color:#6B7280">2026년 9월 23일 수요일</div>
+            </div>
+            <div style="height:36px;padding:0 16px;border-radius:18px;background:#F3F4F6;color:#6B7280;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:4px;background:#D1D5DB"></div>연속 0일</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:16px">
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:6px"><div style="font-size:14px;color:#6B7280">오늘 공부 시간</div><div style="font-size:28px;font-weight:700;color:#D1D5DB">0시간 0분</div></div>
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:6px"><div style="font-size:14px;color:#6B7280">이번 주 합계</div><div style="font-size:28px;font-weight:700;color:#D1D5DB">0시간 0분</div></div>
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:14px;color:#6B7280">주간 목표</div><div style="font-size:13px;color:#6B7280"><b style="font-size:18px">0%</b> · 0시간 / 12시간</div></div>
+              <div style="height:12px;border-radius:6px;background:#EEF2FF"></div>
+              <div style="font-size:12px;color:#6B7280">첫 기록을 남기면 진행률이 채워져요</div>
+            </div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:baseline;gap:8px"><div style="font-size:18px;font-weight:700">과목</div><div style="font-size:13px;color:#6B7280">0/10</div></div>
+            <div style="flex:1;box-sizing:border-box;background:#F9FAFB;border:1px solid #D1D5DB;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#9CA3AF">
+              <div style="width:56px;height:56px;border-radius:28px;border:1px solid #D1D5DB;background:#FFFFFF;font-size:30px;display:flex;align-items:center;justify-content:center">+</div>
+              <div style="font-size:17px;font-weight:700;color:#6B7280">과목 추가</div>
+              <div style="font-size:13px">과목을 추가하면 카드를 눌러 바로 공부를 시작할 수 있어요</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 공부 중 -->
+    <div data-screen-label="03 공부 중" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">03 공부 중 · 사이드바 비활성</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" disabled="true" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex">
+          <div style="flex:1;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px">
+            <div style="display:flex;gap:12px;align-items:center">
+              <div style="height:36px;padding:0 16px;border-radius:8px;background:#0EA5E9;color:#FFFFFF;font-size:16px;font-weight:700;display:flex;align-items:center">수학</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:15px;color:#14B8A6;font-weight:700"><div style="width:10px;height:10px;border-radius:5px;background:#14B8A6"></div>공부 중</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <div style="font-size:104px;font-weight:700;letter-spacing:2px;font-variant-numeric:tabular-nums;line-height:1">01:12:45</div>
+              <div style="display:grid;grid-template-columns:repeat(3,150px);text-align:center;font-size:14px;color:#6B7280"><div>시</div><div>분</div><div>초</div></div>
+            </div>
+            <div style="font-size:14px;color:#6B7280">시작 시각 오후 7:30</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+              <div style="display:flex;gap:16px">
+                <div style="width:180px;height:56px;box-sizing:border-box;border-radius:8px;background:#FFFFFF;border:1px solid #E5E7EB;color:#111827;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center">종료</div>
+                <div style="width:180px;height:56px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center">일시정지</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#6B7280"><div style="height:22px;padding:0 8px;border:1px solid #D1D5DB;border-radius:4px;font-size:12px;display:flex;align-items:center">Space</div>로 일시정지</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03-P -->
+    <div data-screen-label="03-P 일시정지" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">03-P 공부 중 · 일시정지</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" disabled="true" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex">
+          <div style="flex:1;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px">
+            <div style="display:flex;gap:12px;align-items:center">
+              <div style="height:36px;padding:0 16px;border-radius:8px;background:#0EA5E9;color:#FFFFFF;font-size:16px;font-weight:700;display:flex;align-items:center">수학</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:15px;color:#6B7280;font-weight:700"><div style="width:10px;height:10px;border-radius:2px;background:#6B7280"></div>일시정지됨</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <div style="font-size:104px;font-weight:700;letter-spacing:2px;font-variant-numeric:tabular-nums;line-height:1;color:#9CA3AF">01:12:45</div>
+              <div style="display:grid;grid-template-columns:repeat(3,150px);text-align:center;font-size:14px;color:#6B7280"><div>시</div><div>분</div><div>초</div></div>
+            </div>
+            <div style="padding:10px 16px;border-radius:8px;background:#F3F4F6;font-size:14px;color:#6B7280">일시정지 중에는 시간이 기록되지 않아요</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+              <div style="display:flex;gap:16px">
+                <div style="width:180px;height:56px;box-sizing:border-box;border-radius:8px;background:#FFFFFF;border:1px solid #E5E7EB;color:#111827;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center">종료</div>
+                <div style="width:180px;height:56px;border-radius:8px;background:#14B8A6;color:#FFFFFF;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center">재개</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#6B7280"><div style="height:22px;padding:0 8px;border:1px solid #D1D5DB;border-radius:4px;font-size:12px;display:flex;align-items:center">Space</div>로 재개</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 공부 완료 -->
+    <div data-screen-label="04 공부 완료" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">04 공부 완료</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" disabled="true" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;align-items:center;justify-content:center">
+          <div style="width:480px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:24px">
+            <div style="width:64px;height:64px;border-radius:32px;background:#14B8A6;color:#FFFFFF;font-size:30px;font-weight:700;display:flex;align-items:center;justify-content:center">✓</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+              <div style="font-size:26px;font-weight:700">공부 완료!</div>
+              <div style="font-size:14px;color:#6B7280">수고했어요. 오늘 기록을 저장할까요?</div>
+            </div>
+            <div style="width:100%;border-radius:8px;background:#F9FAFB;padding:8px 20px;box-sizing:border-box;display:flex;flex-direction:column">
+              <div style="height:48px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #E5E7EB"><div style="font-size:14px;color:#6B7280">과목</div><div style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700"><div style="width:10px;height:10px;border-radius:5px;background:#0EA5E9"></div>수학</div></div>
+              <div style="height:48px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #E5E7EB"><div style="font-size:14px;color:#6B7280">공부한 시간</div><div style="font-size:18px;font-weight:700;color:#4F46E5">1시간 12분 45초</div></div>
+              <div style="height:48px;display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px;color:#6B7280">시간</div><div style="font-size:15px">오후 7:30 – 오후 8:48</div></div>
+            </div>
+            <div style="width:100%;display:flex;flex-direction:column;gap:10px">
+              <div style="height:52px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center">기록 저장</div>
+              <div style="height:40px;color:#6B7280;font-size:14px;display:flex;align-items:center;justify-content:center">저장하지 않고 닫기</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04-D -->
+    <div data-screen-label="04-D 저장 안 함 확인" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">04-D 저장하지 않고 닫기 확인</div>
+      <div style="position:relative;width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" disabled="true" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;align-items:center;justify-content:center"><div style="width:480px;height:520px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px"></div></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-left:200px">
+          <div style="width:400px;box-sizing:border-box;background:#FFFFFF;border:1px solid #9CA3AF;border-radius:8px;padding:28px;display:flex;flex-direction:column;gap:16px">
+            <div style="font-size:20px;font-weight:700">기록을 저장하지 않을까요?</div>
+            <div style="padding:12px 14px;border-radius:8px;background:#FEF2F2;color:#B91C1C;font-size:14px;line-height:1.5">이번 기록이 사라져요 (수학 1시간 12분 45초)</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+              <div style="height:48px;box-sizing:border-box;border:1px solid #E5E7EB;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center">취소</div>
+              <div style="height:48px;border-radius:8px;background:#DC2626;color:#FFFFFF;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center">저장 안 함</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 기록 -->
+    <div data-screen-label="05 기록" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">05 기록</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="record" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-end">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:26px;font-weight:700">기록</div>
+              <div style="font-size:14px;color:#6B7280">날짜별 공부 기록</div>
+            </div>
+            <div style="font-size:14px;color:#6B7280">최근 3일 · 3시간 55분</div>
+          </div>
+          <div style="flex:1;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:8px 24px;display:flex;flex-direction:column">
+            <sc-for list="{{ recordDays }}" as="day" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;padding:12px 0">
+                <div style="height:40px;display:flex;justify-content:space-between;align-items:center">
+                  <div style="font-size:15px;font-weight:700">{{ day.date }}</div>
+                  <div style="font-size:14px;color:#6B7280">합계 <b style="color:#4F46E5">{{ day.total }}</b></div>
+                </div>
+                <sc-for list="{{ day.items }}" as="it" hint-placeholder-count="2">
+                  <div style="height:44px;display:flex;align-items:center;gap:12px;border-top:1px solid #F3F4F6">
+                    <div style="width:10px;height:10px;border-radius:5px;background:{{ it.color }}"></div>
+                    <div style="width:80px;font-size:15px">{{ it.subject }}</div>
+                    <div style="flex:1;font-size:14px;color:#6B7280">{{ it.range }}</div>
+                    <div style="font-size:15px;font-weight:700;font-variant-numeric:tabular-nums">{{ it.dur }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05-E -->
+    <div data-screen-label="05-E 기록 빈 화면" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">05-E 기록 · 기록 없음</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="record" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:26px;font-weight:700">기록</div>
+            <div style="font-size:14px;color:#6B7280">날짜별 공부 기록</div>
+          </div>
+          <div style="flex:1;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+            <div style="width:72px;height:72px;border-radius:36px;background:#EEF2FF;display:flex;align-items:center;justify-content:center"><div style="width:28px;height:32px;border-radius:4px;border:3px solid #A5B4FC"></div></div>
+            <div style="font-size:20px;font-weight:700">아직 공부 기록이 없어요</div>
+            <div style="font-size:14px;color:#6B7280">홈에서 과목 카드를 누르면 공부가 시작돼요</div>
+            <div style="height:52px;padding:0 36px;margin-top:8px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-size:16px;font-weight:700;display:flex;align-items:center">홈으로 가기</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 분석 주간 -->
+    <div data-screen-label="06 분석 주간" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">06 분석 · 주간</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="analysis" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:26px;font-weight:700">분석</div>
+              <div style="font-size:14px;color:#6B7280">9월 21일 – 9월 27일</div>
+            </div>
+            <div style="display:flex;padding:4px;border-radius:8px;background:#E5E7EB;gap:4px">
+              <div style="width:72px;height:32px;border-radius:6px;background:#FFFFFF;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center">주간</div>
+              <div style="width:72px;height:32px;border-radius:6px;font-size:14px;color:#6B7280;display:flex;align-items:center;justify-content:center">월간</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:20px">
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:13px;color:#6B7280">총 공부 시간</div><div style="font-size:26px;font-weight:700">8시간 40분</div></div>
+                <div style="font-size:13px;color:#14B8A6;font-weight:700">지난주보다 1시간 20분 ↑</div>
+              </div>
+              <div style="height:180px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid #E5E7EB;padding:0 8px">
+                <sc-for list="{{ bars }}" as="b" hint-placeholder-count="7">
+                  <div style="width:32px;display:flex;flex-direction:column;align-items:center;gap:6px">
+                    <div style="font-size:11px;color:#6B7280">{{ b.label }}</div>
+                    <div style="width:32px;height:{{ b.h }}px;border-radius:6px 6px 0 0;background:{{ b.color }}"></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:0 8px">
+                <sc-for list="{{ bars }}" as="b" hint-placeholder-count="7"><div style="width:32px;text-align:center;font-size:13px;color:#6B7280">{{ b.day }}</div></sc-for>
+              </div>
+            </div>
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:15px;font-weight:700">과목별 비율</div><div style="font-size:12px;color:#6B7280">시간 많은 순</div></div>
+              <div style="flex:1;display:flex;align-items:center;gap:20px">
+                <svg width="120" height="120" viewBox="0 0 140 140" style="flex-shrink:0;transform:rotate(-90deg)">
+                  <sc-for list="{{ weekShare }}" as="s" hint-placeholder-count="4"><circle cx="70" cy="70" r="55" fill="none" stroke="{{ s.color }}" stroke-width="26" stroke-dasharray="{{ s.dash }}" stroke-dashoffset="{{ s.offset }}"></circle></sc-for>
+                </svg>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+                  <sc-for list="{{ weekShare }}" as="s" hint-placeholder-count="4">
+                    <div style="height:30px;display:flex;align-items:center;gap:8px;font-size:13px;border-bottom:1px solid #F3F4F6">
+                      <div style="width:10px;height:10px;border-radius:3px;background:{{ s.color }};flex-shrink:0"></div>
+                      <div style="flex:1">{{ s.name }}</div>
+                      <div style="color:#6B7280">{{ s.time }}</div>
+                      <div style="width:36px;text-align:right;font-weight:700">{{ s.pct }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-weight:700">학습 조언</div>
+          <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+            <sc-for list="{{ advice }}" as="a" hint-placeholder-count="3">
+              <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:8px">
+                <div style="align-self:flex-start;height:24px;padding:0 10px;border-radius:12px;background:{{ a.tagBg }};color:{{ a.tagColor }};font-size:12px;font-weight:700;display:flex;align-items:center">{{ a.tag }}</div>
+                <div style="font-size:15px;font-weight:700">{{ a.title }}</div>
+                <div style="font-size:13px;color:#6B7280;line-height:1.5">{{ a.body }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06-M 분석 월간 -->
+    <div data-screen-label="06-M 분석 월간" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">06-M 분석 · 월간</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="analysis" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:26px;font-weight:700">분석</div>
+              <div style="font-size:14px;color:#6B7280">2026년 9월</div>
+            </div>
+            <div style="display:flex;padding:4px;border-radius:8px;background:#E5E7EB;gap:4px">
+              <div style="width:72px;height:32px;border-radius:6px;font-size:14px;color:#6B7280;display:flex;align-items:center;justify-content:center">주간</div>
+              <div style="width:72px;height:32px;border-radius:6px;background:#FFFFFF;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center">월간</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:20px">
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:13px;color:#6B7280">이번 달 총 공부 시간</div><div style="font-size:26px;font-weight:700">36시간 10분</div></div>
+                <div style="font-size:13px;color:#D97706;font-weight:700">지난달보다 2시간 10분 ↓</div>
+              </div>
+              <div style="height:180px;display:flex;align-items:flex-end;justify-content:space-around;border-bottom:1px solid #E5E7EB">
+                <sc-for list="{{ weeks }}" as="w" hint-placeholder-count="5">
+                  <div style="width:52px;display:flex;flex-direction:column;align-items:center;gap:6px">
+                    <div style="font-size:11px;color:#6B7280">{{ w.label }}</div>
+                    <div style="width:52px;height:{{ w.h }}px;border-radius:6px 6px 0 0;background:{{ w.color }}"></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex;justify-content:space-around">
+                <sc-for list="{{ weeks }}" as="w" hint-placeholder-count="5"><div style="width:52px;display:flex;flex-direction:column;align-items:center;gap:2px"><div style="font-size:13px">{{ w.name }}</div><div style="font-size:11px;color:#6B7280">{{ w.range }}</div></div></sc-for>
+              </div>
+            </div>
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:15px;font-weight:700">과목별 비율</div><div style="font-size:12px;color:#6B7280">시간 많은 순</div></div>
+              <div style="flex:1;display:flex;align-items:center;gap:20px">
+                <svg width="120" height="120" viewBox="0 0 140 140" style="flex-shrink:0;transform:rotate(-90deg)">
+                  <sc-for list="{{ monthShare }}" as="s" hint-placeholder-count="4"><circle cx="70" cy="70" r="55" fill="none" stroke="{{ s.color }}" stroke-width="26" stroke-dasharray="{{ s.dash }}" stroke-dashoffset="{{ s.offset }}"></circle></sc-for>
+                </svg>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+                  <sc-for list="{{ monthShare }}" as="s" hint-placeholder-count="4">
+                    <div style="height:30px;display:flex;align-items:center;gap:8px;font-size:13px;border-bottom:1px solid #F3F4F6">
+                      <div style="width:10px;height:10px;border-radius:3px;background:{{ s.color }};flex-shrink:0"></div>
+                      <div style="flex:1">{{ s.name }}</div>
+                      <div style="color:#6B7280">{{ s.time }}</div>
+                      <div style="width:36px;text-align:right;font-weight:700">{{ s.pct }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-weight:700">학습 조언</div>
+          <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+            <sc-for list="{{ monthAdvice }}" as="a" hint-placeholder-count="3">
+              <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:8px">
+                <div style="align-self:flex-start;height:24px;padding:0 10px;border-radius:12px;background:{{ a.tagBg }};color:{{ a.tagColor }};font-size:12px;font-weight:700;display:flex;align-items:center">{{ a.tag }}</div>
+                <div style="font-size:15px;font-weight:700">{{ a.title }}</div>
+                <div style="font-size:13px;color:#6B7280;line-height:1.5">{{ a.body }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06-E -->
+    <div data-screen-label="06-E 분석 빈 화면" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">06-E 분석 · 기록 없음</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="analysis" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:26px;font-weight:700">분석</div>
+              <div style="font-size:14px;color:#6B7280">9월 21일 – 9월 27일</div>
+            </div>
+            <div style="display:flex;padding:4px;border-radius:8px;background:#E5E7EB;gap:4px">
+              <div style="width:72px;height:32px;border-radius:6px;background:#FFFFFF;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center">주간</div>
+              <div style="width:72px;height:32px;border-radius:6px;font-size:14px;color:#6B7280;display:flex;align-items:center;justify-content:center">월간</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:20px">
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:13px;color:#6B7280">총 공부 시간</div><div style="font-size:26px;font-weight:700;color:#D1D5DB">0시간 0분</div></div>
+              <div style="height:180px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid #E5E7EB;padding:0 8px;position:relative">
+                <sc-for list="{{ bars }}" as="b" hint-placeholder-count="7"><div style="width:32px;height:4px;border-radius:2px;background:#E5E7EB"></div></sc-for>
+                <div style="position:absolute;left:0;right:0;top:70px;text-align:center;font-size:14px;color:#6B7280">요일별 공부 시간이 여기에 표시돼요</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:0 8px">
+                <sc-for list="{{ bars }}" as="b" hint-placeholder-count="7"><div style="width:32px;text-align:center;font-size:13px;color:#6B7280">{{ b.day }}</div></sc-for>
+              </div>
+            </div>
+            <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:16px">
+              <div style="font-size:15px;font-weight:700">과목별 비율</div>
+              <div style="flex:1;display:flex;align-items:center;gap:24px">
+                <svg width="120" height="120" viewBox="0 0 140 140" style="flex-shrink:0"><circle cx="70" cy="70" r="55" fill="none" stroke="#E5E7EB" stroke-width="26"></circle></svg>
+                <div style="flex:1;font-size:14px;color:#6B7280;line-height:1.6">과목별로 공부하면 비율을 보여 드려요</div>
+              </div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-weight:700">학습 조언</div>
+          <div style="flex:1;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+            <div style="font-size:16px;font-weight:700">아직 분석할 기록이 없어요</div>
+            <div style="font-size:14px;color:#6B7280">3일 이상 기록하면 맞춤 학습 조언을 알려 드려요</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 목표 -->
+    <div data-screen-label="07 목표" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">07 목표</div>
+      <div style="width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="goal" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-end">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:26px;font-weight:700">목표</div>
+              <div style="font-size:14px;color:#6B7280">이번 주 목표와 달성률</div>
+            </div>
+            <div style="height:44px;padding:0 20px;box-sizing:border-box;border-radius:8px;background:#FFFFFF;border:1px solid #E5E7EB;font-size:15px;display:flex;align-items:center">목표 수정</div>
+          </div>
+          <div style="background:#4F46E5;border-radius:12px;padding:28px 32px;display:flex;align-items:center;gap:32px;color:#FFFFFF">
+            <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+              <div style="font-size:14px;color:#C7D2FE">주간 목표 12시간</div>
+              <div style="font-size:56px;font-weight:700;line-height:1.1">72%</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;font-size:15px"><div><b>8시간 40분</b> 달성</div><div style="color:#C7D2FE">3시간 20분 남음</div></div>
+              <div style="height:16px;border-radius:8px;background:#6366F1"><div style="width:72%;height:16px;border-radius:8px;background:#FFFFFF"></div></div>
+              <div style="font-size:13px;color:#C7D2FE">하루 50분씩 공부하면 이번 주 목표를 채울 수 있어요</div>
+            </div>
+          </div>
+          <div style="flex:1;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:24px 28px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:16px;font-weight:700;margin-bottom:6px">과목별 목표</div>
+            <sc-for list="{{ goals }}" as="g" hint-placeholder-count="4">
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div style="width:10px;height:10px;border-radius:5px;background:{{ g.color }}"></div>
+                  <div style="flex:1;font-size:15px;font-weight:700">{{ g.name }}</div>
+                  <div style="font-size:14px;color:#6B7280">{{ g.detail }}</div>
+                  <div style="width:48px;text-align:right;font-size:15px;font-weight:700">{{ g.pct }}</div>
+                </div>
+                <div style="height:10px;border-radius:5px;background:#F3F4F6"><div style="width:{{ g.pct }};height:10px;border-radius:5px;background:{{ g.color }}"></div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07-D 목표 수정 -->
+    <div data-screen-label="07-D 목표 수정" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">07-D 목표 수정창</div>
+      <div style="position:relative;width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="goal" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px"><div style="font-size:26px;font-weight:700">목표</div><div style="height:140px;border-radius:12px;background:#4F46E5"></div><div style="flex:1;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-left:200px">
+          <div style="width:500px;background:#FFFFFF;border:1px solid #9CA3AF;border-radius:8px;display:flex;flex-direction:column">
+            <div style="height:56px;padding:0 24px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between"><div style="font-size:18px;font-weight:700">목표 수정</div><div style="font-size:16px;color:#6B7280">✕</div></div>
+            <div style="padding:20px 24px;display:flex;flex-direction:column;gap:18px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="flex:1;font-size:15px;font-weight:700">주간 전체 목표</div>
+                <div style="width:64px;height:44px;box-sizing:border-box;border:2px solid #4F46E5;border-radius:8px;padding:0 12px;display:flex;align-items:center;justify-content:flex-end;font-size:17px;font-weight:700">12</div><div style="font-size:14px;width:28px">시간</div>
+                <div style="width:56px;height:44px;box-sizing:border-box;border:1px solid #D1D5DB;border-radius:8px;padding:0 12px;display:flex;align-items:center;justify-content:flex-end;font-size:17px;font-weight:700">0</div><div style="font-size:14px;width:16px">분</div>
+              </div>
+              <div style="display:flex;flex-direction:column">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:6px;border-bottom:1px solid #E5E7EB"><div style="font-size:14px;font-weight:700">과목별 목표</div><div style="font-size:13px;color:#0F766E;font-weight:700">합계 12시간 0분 · 전체와 같아요</div></div>
+                <sc-for list="{{ goalInputs }}" as="g" hint-placeholder-count="4">
+                  <div style="height:52px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #F3F4F6">
+                    <div style="width:10px;height:10px;border-radius:5px;background:{{ g.color }}"></div>
+                    <div style="flex:1;font-size:15px">{{ g.name }}</div>
+                    <div style="width:64px;height:38px;box-sizing:border-box;border:1px solid #D1D5DB;border-radius:8px;padding:0 12px;display:flex;align-items:center;justify-content:flex-end;font-size:15px">{{ g.h }}</div><div style="font-size:14px;color:#6B7280;width:28px">시간</div>
+                    <div style="width:56px;height:38px;box-sizing:border-box;border:1px solid #D1D5DB;border-radius:8px;padding:0 12px;display:flex;align-items:center;justify-content:flex-end;font-size:15px">{{ g.m }}</div><div style="font-size:14px;color:#6B7280;width:16px">분</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-size:12px;color:#6B7280">분은 0~59 · 과목별 합계가 전체보다 커도 저장할 수 있어요</div>
+            </div>
+            <div style="padding:16px 24px;border-top:1px solid #E5E7EB;display:flex;justify-content:flex-end;gap:10px">
+              <div style="width:100px;height:44px;box-sizing:border-box;border:1px solid #E5E7EB;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center">취소</div>
+              <div style="width:100px;height:44px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center">저장</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09-A 과목 추가 -->
+    <div data-screen-label="09-A 과목 추가" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">09-A 과목 추가창 · 안 쓴 색 자동 선택</div>
+      <div style="position:relative;width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="home" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px"><div style="font-size:26px;font-weight:700">안녕하세요, 김민지님</div><div style="height:110px;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div><div style="flex:1;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-left:200px">
+          <div style="width:440px;background:#FFFFFF;border:1px solid #9CA3AF;border-radius:8px;display:flex;flex-direction:column">
+            <div style="height:56px;padding:0 24px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between"><div style="font-size:18px;font-weight:700">과목 추가</div><div style="font-size:16px;color:#6B7280">✕</div></div>
+            <div style="padding:20px 24px;display:flex;flex-direction:column;gap:18px">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="font-size:14px;font-weight:700">과목 이름</div>
+                <div style="height:44px;box-sizing:border-box;border:2px solid #4F46E5;border-radius:8px;padding:0 14px;display:flex;align-items:center;gap:2px;font-size:15px">과학<div style="width:2px;height:18px;background:#4F46E5"></div></div>
+                <div style="font-size:12px;color:#6B7280">1~10자</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:14px;font-weight:700">색</div><div style="font-size:12px;color:#6B7280">흰 점: 이미 쓰는 색</div></div>
+                <div style="display:grid;grid-template-columns:repeat(6,40px);gap:10px 18px">
+                  <sc-for list="{{ paletteNew }}" as="p" hint-placeholder-count="12"><div style="width:40px;height:40px;box-sizing:border-box;border-radius:20px;border:2px solid {{ p.ring }};display:flex;align-items:center;justify-content:center"><div style="width:30px;height:30px;border-radius:15px;background:{{ p.c }};display:flex;align-items:center;justify-content:center"><sc-if value="{{ p.used }}" hint-placeholder-val="{{ false }}"><div style="width:8px;height:8px;border-radius:4px;background:#FFFFFF"></div></sc-if></div></div></sc-for>
+                </div>
+              </div>
+            </div>
+            <div style="padding:16px 24px;border-top:1px solid #E5E7EB;display:flex;justify-content:flex-end;gap:10px">
+              <div style="width:100px;height:44px;box-sizing:border-box;border:1px solid #E5E7EB;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center">취소</div>
+              <div style="width:100px;height:44px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center">추가</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09-A2 중복 -->
+    <div data-screen-label="09-A2 과목 추가 중복" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">09-A2 과목 추가창 · 중복 이름 (추가 비활성)</div>
+      <div style="position:relative;width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="home" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px"><div style="font-size:26px;font-weight:700">안녕하세요, 김민지님</div><div style="height:110px;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div><div style="flex:1;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-left:200px">
+          <div style="width:440px;background:#FFFFFF;border:1px solid #9CA3AF;border-radius:8px;display:flex;flex-direction:column">
+            <div style="height:56px;padding:0 24px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between"><div style="font-size:18px;font-weight:700">과목 추가</div><div style="font-size:16px;color:#6B7280">✕</div></div>
+            <div style="padding:20px 24px;display:flex;flex-direction:column;gap:18px">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="font-size:14px;font-weight:700">과목 이름</div>
+                <div style="height:44px;box-sizing:border-box;border:2px solid #DC2626;border-radius:8px;padding:0 14px;display:flex;align-items:center;gap:2px;font-size:15px">수학<div style="width:2px;height:18px;background:#DC2626"></div></div>
+                <div style="font-size:12px;color:#DC2626;font-weight:700">이미 있는 과목이에요</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:14px;font-weight:700">색</div><div style="font-size:12px;color:#6B7280">흰 점: 이미 쓰는 색</div></div>
+                <div style="display:grid;grid-template-columns:repeat(6,40px);gap:10px 18px">
+                  <sc-for list="{{ paletteNew }}" as="p" hint-placeholder-count="12"><div style="width:40px;height:40px;box-sizing:border-box;border-radius:20px;border:2px solid {{ p.ring }};display:flex;align-items:center;justify-content:center"><div style="width:30px;height:30px;border-radius:15px;background:{{ p.c }};display:flex;align-items:center;justify-content:center"><sc-if value="{{ p.used }}" hint-placeholder-val="{{ false }}"><div style="width:8px;height:8px;border-radius:4px;background:#FFFFFF"></div></sc-if></div></div></sc-for>
+                </div>
+              </div>
+            </div>
+            <div style="padding:16px 24px;border-top:1px solid #E5E7EB;display:flex;justify-content:flex-end;gap:10px">
+              <div style="width:100px;height:44px;box-sizing:border-box;border:1px solid #E5E7EB;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center">취소</div>
+              <div style="width:100px;height:44px;border-radius:8px;background:#E5E7EB;color:#9CA3AF;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center">추가</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09-E 과목 수정 -->
+    <div data-screen-label="09-E 과목 수정" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">09-E 과목 수정창 · 카드의 ⋯ 버튼</div>
+      <div style="position:relative;width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="home" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px"><div style="font-size:26px;font-weight:700">안녕하세요, 김민지님</div><div style="height:110px;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div><div style="flex:1;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-left:200px">
+          <div style="width:440px;background:#FFFFFF;border:1px solid #9CA3AF;border-radius:8px;display:flex;flex-direction:column">
+            <div style="height:56px;padding:0 24px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between"><div style="font-size:18px;font-weight:700">과목 수정</div><div style="font-size:16px;color:#6B7280">✕</div></div>
+            <div style="padding:20px 24px;display:flex;flex-direction:column;gap:18px">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="font-size:14px;font-weight:700">과목 이름</div>
+                <div style="height:44px;box-sizing:border-box;border:2px solid #4F46E5;border-radius:8px;padding:0 14px;display:flex;align-items:center;gap:2px;font-size:15px">국어<div style="width:2px;height:18px;background:#4F46E5"></div></div>
+                <div style="font-size:12px;color:#6B7280">1~10자</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:14px;font-weight:700">색</div><div style="font-size:12px;color:#6B7280">흰 점: 다른 과목이 쓰는 색</div></div>
+                <div style="display:grid;grid-template-columns:repeat(6,40px);gap:10px 18px">
+                  <sc-for list="{{ paletteEdit }}" as="p" hint-placeholder-count="12"><div style="width:40px;height:40px;box-sizing:border-box;border-radius:20px;border:2px solid {{ p.ring }};display:flex;align-items:center;justify-content:center"><div style="width:30px;height:30px;border-radius:15px;background:{{ p.c }};display:flex;align-items:center;justify-content:center"><sc-if value="{{ p.used }}" hint-placeholder-val="{{ false }}"><div style="width:8px;height:8px;border-radius:4px;background:#FFFFFF"></div></sc-if></div></div></sc-for>
+                </div>
+              </div>
+            </div>
+            <div style="padding:16px 24px;border-top:1px solid #E5E7EB;display:flex;justify-content:flex-end;gap:10px">
+              <div style="width:100px;height:44px;box-sizing:border-box;border:1px solid #E5E7EB;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center">취소</div>
+              <div style="width:100px;height:44px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center">저장</div>
+            </div>
+            <div style="padding:16px 24px;border-top:1px solid #E5E7EB">
+              <div style="height:44px;border-radius:8px;background:#DC2626;color:#FFFFFF;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center">과목 삭제</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09-D 과목 삭제 확인 -->
+    <div data-screen-label="09-D 과목 삭제 확인" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">09-D 과목 삭제 확인</div>
+      <div style="position:relative;width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="home" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px"><div style="font-size:26px;font-weight:700">안녕하세요, 김민지님</div><div style="height:110px;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div><div style="flex:1;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-left:200px">
+          <div style="width:400px;box-sizing:border-box;background:#FFFFFF;border:1px solid #9CA3AF;border-radius:8px;padding:28px;display:flex;flex-direction:column;gap:16px">
+            <div style="width:48px;height:48px;border-radius:24px;background:#FEE2E2;color:#DC2626;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:center">!</div>
+            <div style="font-size:20px;font-weight:700">'국어' 과목을 삭제할까요?</div>
+            <div style="padding:12px 14px;border-radius:8px;background:#FEF2F2;color:#B91C1C;font-size:14px;line-height:1.5">이 과목의 기록 12개도 함께 삭제되며 되돌릴 수 없어요</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+              <div style="height:48px;box-sizing:border-box;border:1px solid #E5E7EB;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center">취소</div>
+              <div style="height:48px;border-radius:8px;background:#DC2626;color:#FFFFFF;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center">삭제</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 프로필 -->
+    <div data-screen-label="10 프로필" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">10 프로필창 · 사이드바 프로필 버튼</div>
+      <div style="position:relative;width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="home" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px"><div style="font-size:26px;font-weight:700">안녕하세요, 김민지님</div><div style="height:110px;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div><div style="flex:1;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-left:200px">
+          <div style="width:400px;background:#FFFFFF;border:1px solid #9CA3AF;border-radius:8px;display:flex;flex-direction:column">
+            <div style="height:56px;padding:0 24px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between"><div style="font-size:18px;font-weight:700">프로필</div><div style="font-size:16px;color:#6B7280">✕</div></div>
+            <div style="padding:24px;display:flex;flex-direction:column;align-items:center;gap:20px">
+              <div style="width:64px;height:64px;border-radius:32px;background:#4F46E5;color:#FFFFFF;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:center">김</div>
+              <div style="align-self:stretch;display:flex;flex-direction:column;gap:8px">
+                <div style="font-size:14px;font-weight:700">이름</div>
+                <div style="height:44px;box-sizing:border-box;border:2px solid #4F46E5;border-radius:8px;padding:0 14px;display:flex;align-items:center;gap:2px;font-size:15px">김민지<div style="width:2px;height:18px;background:#4F46E5"></div></div>
+                <div style="font-size:12px;color:#6B7280">1~10자 · 홈 인사말과 사이드바에 표시돼요</div>
+              </div>
+            </div>
+            <div style="padding:0 24px 20px;display:flex;justify-content:flex-end;gap:10px">
+              <div style="width:100px;height:44px;box-sizing:border-box;border:1px solid #E5E7EB;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center">취소</div>
+              <div style="width:100px;height:44px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center">저장</div>
+            </div>
+            <div style="padding:14px 24px;border-top:1px solid #E5E7EB;font-size:13px;color:#DC2626">데이터 초기화</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10-R 초기화 확인 -->
+    <div data-screen-label="10-R 초기화 확인" style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:700;color:#374151">10-R 데이터 초기화 확인</div>
+      <div style="position:relative;width:1100px;height:700px;display:flex;background:#F9FAFB;border-radius:12px;overflow:hidden;outline:1px solid #D1D5DB">
+        <dc-import name="Sidebar" active="home" hint-size="200px,700px"></dc-import>
+        <div style="flex:1;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px"><div style="font-size:26px;font-weight:700">안녕하세요, 김민지님</div><div style="height:110px;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div><div style="flex:1;border-radius:12px;background:#FFFFFF;border:1px solid #E5E7EB"></div></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-left:200px">
+          <div style="width:420px;box-sizing:border-box;background:#FFFFFF;border:1px solid #9CA3AF;border-radius:8px;padding:28px;display:flex;flex-direction:column;gap:16px">
+            <div style="width:48px;height:48px;border-radius:24px;background:#FEE2E2;color:#DC2626;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:center">!</div>
+            <div style="font-size:20px;font-weight:700">모든 데이터를 초기화할까요?</div>
+            <div style="padding:12px 14px;border-radius:8px;background:#FEF2F2;color:#B91C1C;font-size:14px;line-height:1.5">모든 기록·목표·과목이 삭제되고 되돌릴 수 없어요</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:14px">
+              <div style="display:flex;justify-content:space-between"><div style="color:#6B7280">공부 기록</div><div style="font-weight:700">38개</div></div>
+              <div style="display:flex;justify-content:space-between"><div style="color:#6B7280">과목</div><div style="font-weight:700">4개</div></div>
+              <div style="display:flex;justify-content:space-between"><div style="color:#6B7280">목표</div><div style="font-weight:700">주간 · 과목별 전체</div></div>
+            </div>
+            <div style="font-size:13px;color:#6B7280">초기화하면 첫 실행 화면으로 돌아가요</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+              <div style="height:48px;box-sizing:border-box;border:1px solid #E5E7EB;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center">취소</div>
+              <div style="height:48px;border-radius:8px;background:#DC2626;color:#FFFFFF;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center">초기화</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const C = { 컴퓨터: "#4F46E5", 수학: "#0EA5E9", 영어: "#F59E0B", 국어: "#EC4899" };
+    const fmt = m => ((m >= 60 ? `${Math.floor(m / 60)}시간 ` : "") + (m % 60 ? `${m % 60}분` : "")).trim();
+    const short = m => fmt(m).replace("시간 ", "h ").replace("시간", "h").replace("분", "m");
+    const it = (subject, range, dur) => ({ subject, range, dur, color: C[subject] });
+    const PAL = ["#4F46E5","#0EA5E9","#F59E0B","#EC4899","#14B8A6","#8B5CF6","#22C55E","#F97316","#84CC16","#06B6D4","#EF4444","#64748B"];
+    const used4 = ["#4F46E5","#0EA5E9","#F59E0B","#EC4899"];
+    const pal = (sel, used) => PAL.map(c => ({ c, ring: c === sel ? "#111827" : "transparent", used: used.includes(c) }));
+    const lum = h => { const v = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(x => x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4)); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
+    const hex = a => "#" + a.map(x => Math.round(x).toString(16).padStart(2, "0")).join("").toUpperCase();
+    const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+    const tintOf = c => hex(rgb(c).map(x => x * 0.1 + 255 * 0.9));
+    const cr = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+    const darkOf = c => { const t = tintOf(c); for (let k = 0.15; k < 0.9; k += 0.05) { const d = hex(rgb(c).map(x => x * (1 - k))); if (cr(d, t) >= 4.5) return d; } return "#111827"; };
+    const fg = c => lum(c) > 0.4 ? "#111827" : "#FFFFFF";
+    const subj = (list, hov) => list.map(([name, color, week]) => ({ name, color, week: "이번 주 " + week, tint: tintOf(color), dark: darkOf(color), hover: name === hov, idle: name !== hov }));
+    const base4 = [["컴퓨터", C.컴퓨터, "3시간 20분"], ["수학", C.수학, "2시간 40분"], ["영어", C.영어, "1시간 40분"], ["국어", C.국어, "1시간"]];
+    const circ = 2 * Math.PI * 55;
+    const donut = raw => {
+      const sorted = [...raw].sort((a, b) => b[1] - a[1]);
+      const tot = sorted.reduce((s, x) => s + x[1], 0);
+      let acc = 0;
+      return sorted.map(([name, m]) => { const len = m / tot * circ; const o = { name, color: C[name], time: fmt(m), pct: Math.round(m / tot * 100) + "%", dash: `${len.toFixed(1)} ${circ.toFixed(1)}`, offset: (-acc).toFixed(1) }; acc += len; return o; });
+    };
+    const mins = [["월", 90], ["화", 60], ["수", 85], ["목", 120], ["금", 45], ["토", 100], ["일", 20]];
+    const wk = [["1주", "9/1–7", 430], ["2주", "9/8–14", 570], ["3주", "9/15–21", 650], ["4주", "9/22–27", 520], ["5주", "9/28–30", 0]];
+    return {
+      subjects4: subj(base4),
+      subjectsHome: subj(base4, "수학"),
+      hoverDemo: [["수학", C.수학, "기본", false], ["수학", C.수학, "마우스 올림", true], ["영어", C.영어, "기본", false], ["영어", C.영어, "마우스 올림", true]].map(([name, color, label, h]) => ({ name, color, label, hover: h, idle: !h, tint: tintOf(color), dark: darkOf(color), spec: h ? `배경 ${tintOf(color)} · 테두리 ${color} · 글자 ${darkOf(color)}` : `흰 배경 · 띠 ${color}` })),
+      paletteFg: PAL.map(c => ({ c, tint: tintOf(c), dark: darkOf(c) })),
+      subjects10: subj([...base4, ["물리", "#14B8A6", "50분"], ["화학", "#8B5CF6", "1시간 10분"], ["생명과학", "#22C55E", "40분"], ["지구과학", "#F97316", "30분"], ["한국사", "#EF4444", "1시간"], ["일본어", "#06B6D4", "20분"]]),
+      paletteNew: pal("#14B8A6", used4),
+      paletteEdit: pal("#EC4899", ["#4F46E5","#0EA5E9","#F59E0B"]),
+      recordDays: [
+        { date: "9월 23일 (수) · 오늘", total: "1시간 25분", items: [it("수학", "오후 7:30 – 오후 8:48", "1시간 12분"), it("영어", "오후 5:10 – 오후 5:23", "13분")] },
+        { date: "9월 22일 (화)", total: "1시간", items: [it("컴퓨터", "오후 8:00 – 오후 8:40", "40분"), it("국어", "오후 6:30 – 오후 6:50", "20분")] },
+        { date: "9월 21일 (월)", total: "1시간 30분", items: [it("컴퓨터", "오후 7:00 – 오후 7:50", "50분"), it("영어", "오후 9:00 – 오후 9:25", "25분"), it("국어", "오후 10:00 – 오후 10:15", "15분")] },
+      ],
+      bars: mins.map(([day, m]) => ({ day, h: Math.round(m / 120 * 150), label: short(m), color: day === "수" ? "#14B8A6" : "#4F46E5" })),
+      weekShare: donut([["컴퓨터", 200], ["수학", 160], ["영어", 100], ["국어", 60]]),
+      monthShare: donut([["컴퓨터", 780], ["수학", 680], ["영어", 450], ["국어", 260]]),
+      weeks: wk.map(([name, range, m], i) => ({ name, range, h: m ? Math.round(m / 650 * 140) : 4, label: m ? short(m) : "예정", color: m === 0 ? "#E5E7EB" : i === 3 ? "#14B8A6" : "#4F46E5" })),
+      advice: [
+        { tag: "부족한 과목", tagBg: "#FCE7F3", tagColor: "#BE185D", title: "국어 시간이 가장 적어요", body: "이번 주 국어는 1시간이에요. 하루 15분씩 더하면 목표에 닿을 수 있어요." },
+        { tag: "집중한 날", tagBg: "#CCFBF1", tagColor: "#0F766E", title: "목요일에 가장 오래 공부했어요", body: "목요일 2시간 기록이 최고예요. 같은 시간대에 공부를 이어가 보세요." },
+        { tag: "주말 습관", tagBg: "#EEF2FF", tagColor: "#4338CA", title: "일요일 공부가 줄었어요", body: "일요일은 20분이었어요. 주말에도 짧게라도 공부하면 연속 기록이 유지돼요." },
+      ],
+      monthAdvice: [
+        { tag: "최고 기록", tagBg: "#CCFBF1", tagColor: "#0F766E", title: "3주차에 가장 많이 공부했어요", body: "3주차 10시간 50분이 이번 달 최고예요. 그 주의 공부 시간대를 다시 활용해 보세요." },
+        { tag: "부족한 과목", tagBg: "#FCE7F3", tagColor: "#BE185D", title: "국어 비율이 12%예요", body: "이번 달 국어는 4시간 20분이에요. 주 2회 30분씩 더해 보세요." },
+        { tag: "지난달 비교", tagBg: "#FEF3C7", tagColor: "#B45309", title: "지난달보다 2시간 10분 줄었어요", body: "남은 3일 동안 하루 45분씩 공부하면 지난달 기록을 넘을 수 있어요." },
+      ],
+      goals: [
+        { name: "컴퓨터", detail: "3시간 20분 / 4시간", pct: "83%", color: C.컴퓨터 },
+        { name: "수학", detail: "2시간 40분 / 4시간", pct: "67%", color: C.수학 },
+        { name: "영어", detail: "1시간 40분 / 2시간", pct: "83%", color: C.영어 },
+        { name: "국어", detail: "1시간 / 2시간", pct: "50%", color: C.국어 },
+      ],
+      goalInputs: [["컴퓨터", 4, 0], ["수학", 4, 0], ["영어", 2, 0], ["국어", 2, 0]].map(([name, h, m]) => ({ name, h, m, color: C[name] })),
+    };
+  }
+}
+</script>
+</body>
+</html>

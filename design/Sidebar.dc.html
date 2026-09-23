@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="width:200px;height:700px;background:#FFFFFF;border-right:1px solid #E5E7EB;box-sizing:border-box;padding:24px 16px;display:flex;flex-direction:column;gap:8px;flex-shrink:0;font-family:'Malgun Gothic','맑은 고딕','Apple SD Gothic Neo',sans-serif">
+  <div style="display:flex;align-items:center;gap:10px;padding:0 8px;margin-bottom:24px">
+    <div style="width:32px;height:32px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center">S</div>
+    <div style="font-size:18px;font-weight:700;color:#111827">StudyLog</div>
+  </div>
+  <sc-if value="{{ enabled }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}"><div style="height:44px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-weight:700;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#FFFFFF"></div>홈</div></sc-if>
+      <sc-if value="{{ notHome }}" hint-placeholder-val="{{ false }}"><div style="height:44px;border-radius:8px;color:#6B7280;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#D1D5DB"></div>홈</div></sc-if>
+      <sc-if value="{{ isRecord }}" hint-placeholder-val="{{ false }}"><div style="height:44px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-weight:700;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#FFFFFF"></div>기록</div></sc-if>
+      <sc-if value="{{ notRecord }}" hint-placeholder-val="{{ true }}"><div style="height:44px;border-radius:8px;color:#6B7280;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#D1D5DB"></div>기록</div></sc-if>
+      <sc-if value="{{ isAnalysis }}" hint-placeholder-val="{{ false }}"><div style="height:44px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-weight:700;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#FFFFFF"></div>분석</div></sc-if>
+      <sc-if value="{{ notAnalysis }}" hint-placeholder-val="{{ true }}"><div style="height:44px;border-radius:8px;color:#6B7280;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#D1D5DB"></div>분석</div></sc-if>
+      <sc-if value="{{ isGoal }}" hint-placeholder-val="{{ false }}"><div style="height:44px;border-radius:8px;background:#4F46E5;color:#FFFFFF;font-weight:700;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#FFFFFF"></div>목표</div></sc-if>
+      <sc-if value="{{ notGoal }}" hint-placeholder-val="{{ true }}"><div style="height:44px;border-radius:8px;color:#6B7280;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#D1D5DB"></div>목표</div></sc-if>
+      <div style="flex:1"></div>
+      <div style="height:56px;box-sizing:border-box;border-radius:8px;border:1px solid #E5E7EB;padding:0 12px;display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:16px;background:#4F46E5;color:#FFFFFF;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ initial }}</div>
+        <div style="flex:1;font-size:15px;font-weight:700;color:#111827">{{ userName }}</div>
+        <div style="font-size:12px;color:#6B7280">설정</div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ disabled }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+      <div style="height:44px;border-radius:8px;color:#D1D5DB;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#E5E7EB"></div>홈</div>
+      <div style="height:44px;border-radius:8px;color:#D1D5DB;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#E5E7EB"></div>기록</div>
+      <div style="height:44px;border-radius:8px;color:#D1D5DB;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#E5E7EB"></div>분석</div>
+      <div style="height:44px;border-radius:8px;color:#D1D5DB;font-size:15px;display:flex;align-items:center;gap:12px;padding:0 16px"><div style="width:8px;height:8px;border-radius:4px;background:#E5E7EB"></div>목표</div>
+      <div style="flex:1"></div>
+      <div style="height:56px;box-sizing:border-box;border-radius:8px;border:1px solid #F3F4F6;background:#F9FAFB;padding:0 12px;display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:16px;background:#E5E7EB;color:#9CA3AF;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ initial }}</div>
+        <div style="flex:1;font-size:15px;font-weight:700;color:#D1D5DB">{{ userName }}</div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:200,&quot;height&quot;:700},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;record&quot;,&quot;analysis&quot;,&quot;goal&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;'home'|'record'|'analysis'|'goal'&quot;},&quot;disabled&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;userName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;김민지&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const a = this.props.active ?? "home";
+    const d = this.props.disabled === true || this.props.disabled === "true";
+    const userName = this.props.userName ?? "김민지";
+    return {
+      enabled: !d, disabled: d, userName, initial: userName.charAt(0),
+      isHome: a === "home", notHome: a !== "home",
+      isRecord: a === "record", notRecord: a !== "record",
+      isAnalysis: a === "analysis", notAnalysis: a !== "analysis",
+      isGoal: a === "goal", notGoal: a !== "goal",
+    };
+  }
+}
+</script>
+</body>
+</html>
