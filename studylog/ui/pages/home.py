@@ -73,7 +73,7 @@ class HomePage(Page):
             box.grid(row=0, column=col, sticky="nsew", padx=(0, 16))
             label(box, title, 14, color=t.MUTED).pack(anchor="w", padx=20, pady=(20, 0))
             label(box, fmt.duration(sec, empty="0시간 0분"), 28, bold=True,
-                  color=t.TEXT if sec else t.GHOST).pack(anchor="w", padx=20, pady=(6, 20))
+                  color=t.TEXT if sec >= 60 else t.GHOST).pack(anchor="w", padx=20, pady=(6, 20))
 
         goal = card(grid)
         goal.grid(row=0, column=2, sticky="nsew")

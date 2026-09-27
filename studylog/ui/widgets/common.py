@@ -136,9 +136,11 @@ class Button(ctk.CTkButton):
     """디자인의 버튼 종류(primary/secondary/danger/ghost). 비활성이면 회색 배경."""
 
     def __init__(self, master, text: str, kind: str = "primary", width: int = 100,
-                 height: int = 44, size: int = 15, command: Callable | None = None, **kwargs):
+                 height: int = 44, size: int = 15, command: Callable | None = None,
+                 bold: bool | None = None, **kwargs):
         style = dict(_BUTTON_STYLES[kind])
-        bold = style.pop("bold")
+        style_bold = style.pop("bold")
+        bold = style_bold if bold is None else bold
         self._enabled_colors = (style["fg_color"], style["hover_color"])
         super().__init__(master, text=text, width=width, height=height, corner_radius=t.R_CTRL,
                          font=t.font(size, bold), command=command,

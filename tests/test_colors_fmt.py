@@ -45,3 +45,8 @@ def test_dates():
     assert fmt.date_long(d) == "2026년 9월 23일 수요일"
     assert fmt.date_short(d, today=d) == "9월 23일 (수) · 오늘"
     assert fmt.date_range(date(2026, 9, 21), date(2026, 9, 27)) == "9월 21일 – 9월 27일"
+
+
+def test_on_color():
+    assert colors.on_color("#0EA5E9") == "#FFFFFF"
+    assert colors.on_color("#84CC16") == colors.TEXT_DARK

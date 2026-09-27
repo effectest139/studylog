@@ -10,6 +10,7 @@ from .dialogs.confirm import AlertDialog
 from .pages.base import Page, PlaceholderPage
 from .pages.home import HomePage
 from .pages.onboarding import OnboardingScreen
+from .pages.study import StudyPage
 from .widgets.sidebar import Sidebar
 
 
@@ -26,6 +27,7 @@ class MainScreen(ctk.CTkFrame):
         self.pages: dict[str, Page] = {}
         self.current: str | None = None
         self.locked = False
+        self.study: StudyPage | None = None
         self.show_page("home")
 
     def _make_page(self, key: str) -> Page:
@@ -49,14 +51,41 @@ class MainScreen(ctk.CTkFrame):
         self.sidebar.set_active(key)
 
     def set_locked(self, locked: bool) -> None:
-        """공부 중에는 사이드바와 프로필 버튼을 잠근다(4단계에서 사용)."""
+        """공부 중에는 사이드바와 프로필 버튼을 잠근다."""
         self.locked = locked
         self.sidebar.set_locked(locked)
         if not locked:
             self.sidebar.set_active(self.current or "home")
 
+    # --- 공부 ---
+
+    def start_study(self, subject_id: str) -> None:
+        if self.study is not None:
+            return
+        subject = self.app.store.get_subject(subject_id)
+        if self.current:
+            self.pages[self.current].pack_forget()
+        self.study = StudyPage(self.content, self.app, subject, on_finish=self._end_study)
+        self.study.pack(fill="both", expand=True)
+        self.set_locked(True)
+
+    def _end_study(self) -> None:
+        if self.study is not None:
+            self.study.destroy()
+            self.study = None
+        self.set_locked(False)
+        self.current = None
+        self.show_page("home")  # 방금 저장한 기록이 요약에 반영된다
+
+    # --- 키 ---
+
     def on_enter_key(self) -> None:
-        pass
+        if self.study is not None:
+            self.study.on_enter_key()
+
+    def on_space_key(self) -> None:
+        if self.study is not None:
+            self.study.on_space_key()
 
 
 class App(ctk.CTk):
@@ -74,6 +103,8 @@ class App(ctk.CTk):
         self.screen: OnboardingScreen | MainScreen | None = None
         self.bind("<Return>", self._on_return)
         self.bind("<KP_Enter>", self._on_return)
+        self.bind("<space>", self._on_space)
+        self.protocol("WM_DELETE_WINDOW", self._on_close)
 
         if store.is_onboarded:
             self.show_main()
@@ -109,7 +140,9 @@ class App(ctk.CTk):
             self.screen.show_page("goal")
 
     def start_study(self, subject_id: str) -> None:
-        """과목 카드를 누르면 공부를 시작한다(4단계에서 만든다)."""
+        """과목 카드를 누르면 공부를 시작한다."""
+        if isinstance(self.screen, MainScreen):
+            self.screen.start_study(subject_id)
 
     def run_safely(self, action, *args) -> bool:
         """데이터를 바꾸는 동작을 실행한다. 실패하면 알림창을 띄우고 False."""
@@ -128,6 +161,22 @@ class App(ctk.CTk):
         # 대화상자는 별도 창이라 이 바인딩이 불리지 않는다(대화상자가 따로 처리)
         if self.screen is not None:
             self.screen.on_enter_key()
+
+    def _on_space(self, _event=None):
+        # 공부 중일 때만 쓴다(처음 등록 화면의 입력칸에서는 그냥 띄어쓰기)
+        if isinstance(self.screen, MainScreen):
+            self.screen.on_space_key()
+
+    def _on_close(self) -> None:
+        """창의 X. 대화상자가 떠 있으면 무시하고, 공부 중이면 저장할지 묻는다."""
+        grabbed = self.grab_current()
+        if grabbed is not None and grabbed is not self:
+            grabbed.focus_force()
+            return
+        if isinstance(self.screen, MainScreen) and self.screen.study is not None:
+            self.screen.study.ask_quit(self.destroy)
+            return
+        self.destroy()
 
     # --- 창 크기 ---
 

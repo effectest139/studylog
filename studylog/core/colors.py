@@ -52,3 +52,8 @@ def next_unused(used: list[str] | tuple[str, ...]) -> str:
         if c not in used_set:
             return c
     return PALETTE[len(used) % len(PALETTE)]
+
+
+def on_color(c: str) -> str:
+    """과목색 배경 위 글자색: 밝은 색이면 검정, 아니면 흰색(디자인 규칙)."""
+    return TEXT_DARK if _luminance(c) > 0.4 else "#FFFFFF"
