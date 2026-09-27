@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import customtkinter as ctk
 
-from ..core.store import DataStore
+from ..core.store import DataStore, ValidationError
 from . import theme as t
 from .dialogs.confirm import AlertDialog
 from .pages.base import Page, PlaceholderPage
+from .pages.home import HomePage
 from .pages.onboarding import OnboardingScreen
 from .widgets.sidebar import Sidebar
 
@@ -28,7 +29,9 @@ class MainScreen(ctk.CTkFrame):
         self.show_page("home")
 
     def _make_page(self, key: str) -> Page:
-        titles = {"home": ("홈", 3), "record": ("기록", 5), "analysis": ("분석", 6), "goal": ("목표", 7)}
+        if key == "home":
+            return HomePage(self.content, self.app)
+        titles = {"record": ("기록", 5), "analysis": ("분석", 6), "goal": ("목표", 7)}
         title, step = titles[key]
         return PlaceholderPage(self.content, self.app, title, step)
 
@@ -99,6 +102,25 @@ class App(ctk.CTk):
 
     def open_profile(self) -> None:
         """프로필 창은 7단계에서 만든다."""
+
+    def open_goal_editor(self) -> None:
+        """목표 수정창은 7단계에서 만든다. 지금은 목표 페이지로만 이동한다."""
+        if isinstance(self.screen, MainScreen):
+            self.screen.show_page("goal")
+
+    def start_study(self, subject_id: str) -> None:
+        """과목 카드를 누르면 공부를 시작한다(4단계에서 만든다)."""
+
+    def run_safely(self, action, *args) -> bool:
+        """데이터를 바꾸는 동작을 실행한다. 실패하면 알림창을 띄우고 False."""
+        try:
+            action(*args)
+            return True
+        except ValidationError as e:
+            AlertDialog(self, "저장할 수 없어요", str(e))
+        except OSError as e:
+            AlertDialog(self, "저장하지 못했어요", f"데이터 파일을 쓸 수 없어요.\n{e}")
+        return False
 
     # --- 키 ---
 

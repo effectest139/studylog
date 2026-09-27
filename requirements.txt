@@ -1,5 +1,6 @@
 customtkinter>=5.2
 matplotlib>=3.8
+pillow>=10
 
 # 개발용
 pytest>=8
