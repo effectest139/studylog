@@ -70,3 +70,13 @@ def test_goal_progress():
 
     none = stats.goal_progress(100, 0)
     assert not none.has_goal and none.percent == 0 and none.ratio == 0
+
+
+def test_sessions_by_day():
+    sessions = [sess(ago(1), 40), sess(TODAY, 13, hour=17), sess(TODAY, 72, hour=19), sess(ago(3), 20)]
+    groups = stats.sessions_by_day(sessions)
+    assert [d for d, _, _ in groups] == [TODAY, ago(1), ago(3)]
+    day, items, total = groups[0]
+    assert [s.start.hour for s in items] == [19, 17]
+    assert total == 85 * 60
+    assert stats.sessions_by_day([]) == []

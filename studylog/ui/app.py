@@ -8,6 +8,7 @@ from ..core.store import DataStore, ValidationError
 from . import theme as t
 from .dialogs.confirm import AlertDialog
 from .pages.base import Page, PlaceholderPage
+from .pages.history import HistoryPage
 from .pages.home import HomePage
 from .pages.onboarding import OnboardingScreen
 from .pages.study import StudyPage
@@ -33,7 +34,9 @@ class MainScreen(ctk.CTkFrame):
     def _make_page(self, key: str) -> Page:
         if key == "home":
             return HomePage(self.content, self.app)
-        titles = {"record": ("기록", 5), "analysis": ("분석", 6), "goal": ("목표", 7)}
+        if key == "record":
+            return HistoryPage(self.content, self.app)
+        titles = {"analysis": ("분석", 6), "goal": ("목표", 7)}
         title, step = titles[key]
         return PlaceholderPage(self.content, self.app, title, step)
 

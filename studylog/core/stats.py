@@ -81,3 +81,13 @@ class GoalProgress:
 
 def goal_progress(done_seconds: int, goal_minutes: int) -> GoalProgress:
     return GoalProgress(goal_minutes * 60, done_seconds)
+
+
+def sessions_by_day(sessions: Iterable[Session]) -> list[tuple[date, list[Session], int]]:
+    """기록 화면용: (날짜, 그날 기록들, 그날 합계). 최근 날짜가 먼저, 하루 안에서도 늦게 시작한 기록이 먼저."""
+    groups: dict[date, list[Session]] = defaultdict(list)
+    for s in sessions:
+        groups[s.day].append(s)
+    return [(d, sorted(groups[d], key=lambda s: s.start, reverse=True),
+             sum(s.study_seconds for s in groups[d]))
+            for d in sorted(groups, reverse=True)]
