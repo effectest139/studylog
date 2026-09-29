@@ -15,6 +15,9 @@ class ModalDialog(ctk.CTkToplevel):
     - close(): Esc, 창의 X, 취소 버튼.
     """
 
+    # 되돌릴 수 없는 동작(삭제·초기화)의 확인창은 False로 두어 마우스로만 확인하게 한다
+    confirm_on_enter = True
+
     def __init__(self, parent, title: str, width: int):
         super().__init__(parent, fg_color=t.SURFACE)
         self.withdraw()  # 내용을 다 만들고 가운데로 옮긴 뒤 보인다(깜빡임 방지)
@@ -92,6 +95,8 @@ class ModalDialog(ctk.CTkToplevel):
             parent.winfo_toplevel().focus_force()
 
     def _on_return(self, _event=None):
+        if not self.confirm_on_enter:
+            return "break"
         if self.default_button is not None and not self.default_button.enabled:
             return "break"
         self.on_confirm()

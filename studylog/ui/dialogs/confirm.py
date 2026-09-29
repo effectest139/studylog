@@ -12,7 +12,12 @@ from .base import ModalDialog
 
 
 class ConfirmDialog(ModalDialog):
-    """[!] 제목 / 빨간 안내 상자 / (추가 줄) / [취소][위험 버튼]. 버튼은 가로로 반씩."""
+    """[!] 제목 / 빨간 안내 상자 / (추가 줄) / [취소][위험 버튼]. 버튼은 가로로 반씩.
+
+    되돌릴 수 없는 동작용이라 Enter로는 확인되지 않는다(위험 버튼은 마우스로만). Esc는 취소.
+    """
+
+    confirm_on_enter = False
 
     def __init__(self, parent, title: str, message: str, confirm_text: str,
                  on_confirm: Callable[[], None], rows: list[tuple[str, str]] | None = None,
