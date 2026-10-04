@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# 배치 파일은 Windows 줄 끝(CRLF)이어야 안전하게 실행된다
+*.bat text eol=crlf

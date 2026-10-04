@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import customtkinter as ctk
 
+from .. import errorlog
 from ..core import storage
 from ..core.store import DataStore, ValidationError
 from . import theme as t
@@ -183,6 +184,14 @@ class App(ctk.CTk):
         """과목 카드를 누르면 공부를 시작한다."""
         if isinstance(self.screen, MainScreen):
             self.screen.start_study(subject_id)
+
+    def report_callback_exception(self, exc_type, exc, tb) -> None:
+        """버튼·타이머 등 화면에서 난 오류: 기록 파일에 남기고 알린다(앱은 계속 동작)."""
+        errorlog.log_exception(exc_type, exc, tb, "화면 오류")
+        grabbed = self.grab_current()
+        if grabbed is None or grabbed is self:  # 다른 대화상자가 떠 있으면 알림을 겹쳐 띄우지 않는다
+            AlertDialog(self, "예상하지 못한 오류가 났어요",
+                        f"자세한 내용을 아래 파일에 기록했어요.\n{errorlog.LOG_PATH}", width=460)
 
     def run_safely(self, action, *args) -> bool:
         """데이터를 바꾸는 동작을 실행한다. 실패하면 알림창을 띄우고 False."""
