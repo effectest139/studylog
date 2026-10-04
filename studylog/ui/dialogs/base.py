@@ -31,6 +31,8 @@ class ModalDialog(ctk.CTkToplevel):
 
         self.body = ctk.CTkFrame(self, fg_color="transparent", width=width)
         self.body.pack(fill="both", expand=True)
+        # pack은 내용 폭을 따라가서 정한 폭보다 좁아질 수 있다: 폭을 잡아 주는 보이지 않는 틀
+        ctk.CTkFrame(self.body, width=width, height=0, fg_color="transparent").pack()
 
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.bind("<Return>", self._on_return)

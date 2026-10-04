@@ -40,7 +40,7 @@ class ConfirmDialog(ModalDialog):
             label(row, key, 14, color=t.MUTED).pack(side="left")
             label(row, value, 14, bold=True).pack(side="right")
         if note:
-            label(box, note, 13, color=t.MUTED).pack(anchor="w", pady=(16, 0))
+            label(box, note, 13, color=t.MUTED, justify="left").pack(anchor="w", pady=(16, 0))
 
         buttons = ctk.CTkFrame(box, fg_color="transparent")
         buttons.pack(fill="x", pady=(20, 0))

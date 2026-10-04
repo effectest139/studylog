@@ -4,11 +4,15 @@ from __future__ import annotations
 
 import customtkinter as ctk
 
+from ..core import storage
 from ..core.store import DataStore, ValidationError
 from . import theme as t
-from .dialogs.confirm import AlertDialog
+from .dialogs.confirm import AlertDialog, ConfirmDialog
+from .dialogs.goal_dialog import GoalDialog
+from .dialogs.profile_dialog import ProfileDialog
 from .pages.analysis import AnalysisPage
-from .pages.base import Page, PlaceholderPage
+from .pages.base import Page
+from .pages.goals import GoalsPage
 from .pages.history import HistoryPage
 from .pages.home import HomePage
 from .pages.onboarding import OnboardingScreen
@@ -32,16 +36,15 @@ class MainScreen(ctk.CTkFrame):
         self.study: StudyPage | None = None
         self.show_page("home")
 
+    PAGES = {"home": HomePage, "record": HistoryPage, "analysis": AnalysisPage, "goal": GoalsPage}
+
     def _make_page(self, key: str) -> Page:
-        if key == "home":
-            return HomePage(self.content, self.app)
-        if key == "record":
-            return HistoryPage(self.content, self.app)
-        if key == "analysis":
-            return AnalysisPage(self.content, self.app)
-        titles = {"goal": ("목표", 7)}
-        title, step = titles[key]
-        return PlaceholderPage(self.content, self.app, title, step)
+        return self.PAGES[key](self.content, self.app)
+
+    def refresh_current(self) -> None:
+        """이름·목표를 바꾼 뒤 지금 페이지를 다시 그린다."""
+        if self.current and self.study is None:
+            self.pages[self.current].refresh()
 
     def show_page(self, key: str) -> None:
         if self.locked:
@@ -137,13 +140,44 @@ class App(ctk.CTk):
     def show_main(self) -> None:
         self._set_screen(MainScreen(self, self))
 
-    def open_profile(self) -> None:
-        """프로필 창은 7단계에서 만든다."""
+    def _main_unlocked(self) -> MainScreen | None:
+        """공부 중이 아닌 메인 화면일 때만 돌려준다."""
+        if isinstance(self.screen, MainScreen) and not self.screen.locked:
+            return self.screen
+        return None
 
     def open_goal_editor(self) -> None:
-        """목표 수정창은 7단계에서 만든다. 지금은 목표 페이지로만 이동한다."""
-        if isinstance(self.screen, MainScreen):
-            self.screen.show_page("goal")
+        """목표 수정창(홈의 '목표를 설정해 보세요 →', 목표 페이지의 '목표 수정')."""
+        main = self._main_unlocked()
+        if main is not None:
+            GoalDialog(self, self.store, on_saved=main.refresh_current)
+
+    # --- 프로필·초기화 ---
+
+    def open_profile(self) -> None:
+        if self._main_unlocked() is not None:
+            ProfileDialog(self, self.store.name, on_save=self._save_name, on_reset=self._confirm_reset)
+
+    def _save_name(self, name: str) -> None:
+        main = self._main_unlocked()
+        if self.run_safely(self.store.set_name, name) and main is not None:
+            main.sidebar.set_user_name(self.store.name)
+            main.refresh_current()
+
+    def _confirm_reset(self) -> None:
+        summary = self.store.reset_summary()
+        note = "초기화하면 첫 실행 화면으로 돌아가요"
+        if self.store.path.resolve() != storage.DEFAULT_DATA_PATH.resolve():
+            # --data로 다른 파일을 열었을 때: 그 파일만 비운다는 것을 알려 준다
+            note += f"\n대상 파일: {self.store.path.name} (실제 데이터는 그대로예요)"
+        ConfirmDialog(self, "모든 데이터를 초기화할까요?", "모든 기록·목표·과목이 삭제되고 되돌릴 수 없어요",
+                      "초기화", self._reset, width=420, note=note,
+                      rows=[("공부 기록", f"{summary.sessions}개"), ("과목", f"{summary.subjects}개"),
+                            ("목표", "주간 · 과목별 전체" if summary.has_goals else "없음")])
+
+    def _reset(self) -> None:
+        if self.run_safely(self.store.reset):
+            self.show_onboarding()
 
     def start_study(self, subject_id: str) -> None:
         """과목 카드를 누르면 공부를 시작한다."""

@@ -48,6 +48,7 @@ def check_subject_name(name: str, existing_names: Iterable[str]) -> str | None:
 class ResetSummary:
     sessions: int
     subjects: int
+    has_goals: bool
 
 
 class DataStore:
@@ -125,7 +126,9 @@ class DataStore:
         return sum(1 for s in self.data.sessions if s.subject_id == subject_id)
 
     def reset_summary(self) -> ResetSummary:
-        return ResetSummary(len(self.data.sessions), len(self.data.subjects))
+        has_goals = self.data.weekly_goal_minutes > 0 or any(
+            s.weekly_goal_minutes > 0 for s in self.data.subjects)
+        return ResetSummary(len(self.data.sessions), len(self.data.subjects), has_goals)
 
     # --- 프로필·온보딩 ---
 
@@ -228,6 +231,9 @@ class DataStore:
     # --- 초기화 ---
 
     def reset(self) -> None:
-        """기록·목표·과목·이름을 모두 지운다. 다음 화면은 첫 실행 화면."""
+        """기록·목표·과목·이름을 모두 지운다. 다음 화면은 첫 실행 화면.
+
+        지금 연 파일(self.path)만 비운다. --data로 다른 파일을 열었으면 실제 데이터는 그대로다.
+        """
         self.data = AppData()
         self._save()

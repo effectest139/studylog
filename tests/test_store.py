@@ -135,7 +135,9 @@ def test_goals(store, path):
 def test_reset(store, path):
     store.add_session(subject_id(store, "수학"), T0, T0 + timedelta(hours=1), 3600)
     summary = store.reset_summary()
-    assert (summary.sessions, summary.subjects) == (1, 2)
+    assert (summary.sessions, summary.subjects, summary.has_goals) == (1, 2, False)
+    store.set_goals(0, {subject_id(store, "영어"): 30})
+    assert store.reset_summary().has_goals
     store.reset()
     again = DataStore.open(path)
     assert not again.is_onboarded
@@ -173,3 +175,15 @@ def test_saved_json_shape(store, path):
     assert raw["sessions"][0]["start"] == "2026-09-23T19:30:00"
     assert raw["sessions"][0]["study_seconds"] == 3500
     assert not path.with_name(path.name + ".tmp").exists()
+
+
+def test_reset_only_clears_the_opened_file(tmp_path):
+    real = tmp_path / "studylog.json"
+    dev = tmp_path / "dev.json"
+    a = DataStore.open(real)
+    a.complete_onboarding("진짜", [("수학", PALETTE[0])])
+    b = DataStore.open(dev)
+    b.complete_onboarding("가짜", [("영어", PALETTE[1])])
+    b.reset()
+    assert not DataStore.open(dev).is_onboarded
+    assert DataStore.open(real).name == "진짜"
