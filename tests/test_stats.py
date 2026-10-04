@@ -80,3 +80,43 @@ def test_sessions_by_day():
     assert [s.start.hour for s in items] == [19, 17]
     assert total == 85 * 60
     assert stats.sessions_by_day([]) == []
+
+
+def test_week_days():
+    days = stats.week_days([sess(TODAY, 30), sess(ago(2), 10)], TODAY)
+    assert [d for d, _ in days][0] == date(2026, 9, 21) and len(days) == 7
+    assert [sec // 60 for _, sec in days] == [10, 0, 30, 0, 0, 0, 0]
+
+
+def test_month_weeks_are_seven_day_chunks():
+    weeks = stats.month_weeks([sess(date(2026, 9, 8), 60), sess(date(2026, 9, 30), 20)], TODAY)
+    assert [(a.day, b.day) for a, b, _ in weeks] == [(1, 7), (8, 14), (15, 21), (22, 28), (29, 30)]
+    assert [sec // 60 for _, _, sec in weeks] == [0, 60, 0, 0, 20]
+    feb = stats.month_weeks([], date(2026, 2, 10))
+    assert [(a.day, b.day) for a, b, _ in feb] == [(1, 7), (8, 14), (15, 21), (22, 28)]
+
+
+def test_compare_week_same_weekday():
+    # 오늘은 수요일: 이번 주 월~수 ↔ 지난주 월~수 (지난주 목요일 기록은 빼야 함)
+    sessions = [sess(TODAY, 60), sess(ago(1), 30),
+                sess(ago(7), 20), sess(ago(9), 10), sess(ago(6), 999)]
+    c = stats.compare_week(sessions, TODAY)
+    assert (c.current // 60, c.previous // 60, c.diff // 60) == (90, 30, 60)
+    assert c.previous_range == (date(2026, 9, 14), date(2026, 9, 16))
+
+
+def test_compare_month_same_date():
+    sessions = [sess(date(2026, 9, 3), 40), sess(date(2026, 8, 23), 50), sess(date(2026, 8, 24), 999)]
+    c = stats.compare_month(sessions, TODAY)
+    assert (c.current // 60, c.previous // 60) == (40, 50)
+    # 3월 31일 ↔ 2월은 말일(28일)까지
+    c2 = stats.compare_month([], date(2026, 3, 31))
+    assert c2.previous_range == (date(2026, 2, 1), date(2026, 2, 28))
+    # 1월 ↔ 지난해 12월
+    assert stats.compare_month([], date(2026, 1, 5)).previous_range == (date(2025, 12, 1), date(2025, 12, 5))
+
+
+def test_subject_shares_and_recorded_days():
+    sessions = [sess(TODAY, 10, "a"), sess(TODAY, 50, "b", hour=8), sess(ago(1), 30, "a"), sess(ago(10), 99, "c")]
+    assert stats.subject_shares(sessions, ago(1), TODAY) == [("b", 3000), ("a", 2400)]
+    assert stats.recorded_days(sessions) == 3

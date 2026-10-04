@@ -91,3 +91,80 @@ def sessions_by_day(sessions: Iterable[Session]) -> list[tuple[date, list[Sessio
     return [(d, sorted(groups[d], key=lambda s: s.start, reverse=True),
              sum(s.study_seconds for s in groups[d]))
             for d in sorted(groups, reverse=True)]
+
+
+# --- 분석 화면 ---
+
+def week_days(sessions: Iterable[Session], today: date) -> list[tuple[date, int]]:
+    """이번 주 월~일 7일의 (날짜, 공부 시간). 오늘 이후 날은 0."""
+    totals = day_totals(sessions)
+    monday = week_start(today)
+    return [(monday + timedelta(days=i), totals.get(monday + timedelta(days=i), 0)) for i in range(7)]
+
+
+def month_last_day(d: date) -> date:
+    nxt = date(d.year + d.month // 12, d.month % 12 + 1, 1)
+    return nxt - timedelta(days=1)
+
+
+def month_weeks(sessions: Iterable[Session], today: date) -> list[tuple[date, date, int]]:
+    """이번 달을 1~7일, 8~14일 … 7일씩 나눈 주차별 (첫날, 끝날, 공부 시간)."""
+    sessions = list(sessions)
+    first = today.replace(day=1)
+    last = month_last_day(today)
+    weeks = []
+    start = first
+    while start <= last:
+        end = min(start + timedelta(days=6), last)
+        weeks.append((start, end, total_between(sessions, start, end)))
+        start = end + timedelta(days=1)
+    return weeks
+
+
+@dataclass(frozen=True)
+class Comparison:
+    """같은 기간끼리 비교: 이번 기간(오늘까지) ↔ 지난 기간(같은 요일·날짜까지)."""
+    current: int
+    previous: int
+    current_range: tuple[date, date]
+    previous_range: tuple[date, date]
+
+    @property
+    def diff(self) -> int:
+        return self.current - self.previous
+
+
+def compare_week(sessions: Iterable[Session], today: date) -> Comparison:
+    sessions = list(sessions)
+    monday = week_start(today)
+    prev_monday = monday - timedelta(days=7)
+    prev_same = today - timedelta(days=7)
+    return Comparison(total_between(sessions, monday, today),
+                      total_between(sessions, prev_monday, prev_same),
+                      (monday, today), (prev_monday, prev_same))
+
+
+def compare_month(sessions: Iterable[Session], today: date) -> Comparison:
+    """지난달에 같은 날짜가 없으면(예: 3/31 ↔ 2월) 지난달 말일까지."""
+    sessions = list(sessions)
+    first = today.replace(day=1)
+    prev_last_day = first - timedelta(days=1)
+    prev_first = prev_last_day.replace(day=1)
+    prev_same = prev_first.replace(day=min(today.day, prev_last_day.day))
+    return Comparison(total_between(sessions, first, today),
+                      total_between(sessions, prev_first, prev_same),
+                      (first, today), (prev_first, prev_same))
+
+
+def subject_shares(sessions: Iterable[Session], first: date, last: date) -> list[tuple[str, int]]:
+    """기간 안의 과목별 (subject_id, 공부 시간). 시간이 많은 순, 0인 과목은 뺀다."""
+    totals: dict[str, int] = defaultdict(int)
+    for s in sessions:
+        if first <= s.day <= last:
+            totals[s.subject_id] += s.study_seconds
+    return sorted(((sid, sec) for sid, sec in totals.items() if sec > 0), key=lambda x: -x[1])
+
+
+def recorded_days(sessions: Iterable[Session]) -> int:
+    """기록이 있는 날짜 수(전체 기록 기준). 학습 조언은 3일 이상일 때만 보여 준다."""
+    return len({s.day for s in sessions})

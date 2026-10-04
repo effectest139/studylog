@@ -7,6 +7,7 @@ import customtkinter as ctk
 from ..core.store import DataStore, ValidationError
 from . import theme as t
 from .dialogs.confirm import AlertDialog
+from .pages.analysis import AnalysisPage
 from .pages.base import Page, PlaceholderPage
 from .pages.history import HistoryPage
 from .pages.home import HomePage
@@ -36,7 +37,9 @@ class MainScreen(ctk.CTkFrame):
             return HomePage(self.content, self.app)
         if key == "record":
             return HistoryPage(self.content, self.app)
-        titles = {"analysis": ("분석", 6), "goal": ("목표", 7)}
+        if key == "analysis":
+            return AnalysisPage(self.content, self.app)
+        titles = {"goal": ("목표", 7)}
         title, step = titles[key]
         return PlaceholderPage(self.content, self.app, title, step)
 
