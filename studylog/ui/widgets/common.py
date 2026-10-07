@@ -38,28 +38,92 @@ def pointer_inside(widget) -> bool:
     return under is not None and (under is widget or str(under).startswith(str(widget) + "."))
 
 
-def bind_hover(widget, on_enter: Callable[[], None], on_leave: Callable[[], None]) -> None:
+class Hover:
+    """bind_hover가 만드는 호버 상태 하나.
+
+    대화상자가 떠 있는 동안에는 마우스 입력을 대화상자가 가져가서 <Leave>가 오지 않는다.
+    그래서 대화상자가 열릴 때 reset_all(), 닫힌 뒤 sync_all()로 모든 호버를 맞춘다.
+    """
+
+    _all: list[Hover] = []
+
+    def __init__(self, widget, on_enter: Callable[[], None], on_leave: Callable[[], None],
+                 group: HoverGroup | None = None):
+        self.widget = widget
+        self.inside = False
+        self._on_enter = on_enter
+        self._on_leave = on_leave
+        self._group = group
+        if group is not None:
+            group.members.append(self)
+        Hover._all.append(self)
+
+    def alive(self) -> bool:
+        try:
+            return bool(self.widget.winfo_exists())
+        except tk.TclError:
+            return False
+
+    def set(self, inside: bool) -> None:
+        if inside == self.inside or not self.alive():
+            return
+        self.inside = inside
+        if inside:
+            if self._group is not None:
+                self._group.only(self)
+            self._on_enter()
+        else:
+            self._on_leave()
+
+    def sync(self) -> None:
+        """실제 마우스 위치에 맞춘다."""
+        if self.alive():
+            self.set(pointer_inside(self.widget))
+
+    @classmethod
+    def _live(cls) -> list[Hover]:
+        cls._all = [h for h in cls._all if h.alive()]  # 다시 그리며 없어진 위젯은 정리
+        return cls._all
+
+    @classmethod
+    def reset_all(cls) -> None:
+        for h in cls._live():
+            h.set(False)
+
+    @classmethod
+    def sync_all(cls) -> None:
+        for h in cls._live():
+            h.sync()
+
+
+class HoverGroup:
+    """이 묶음 안에서는 호버가 항상 최대 1개(과목 카드처럼 나란히 놓인 것들)."""
+
+    def __init__(self):
+        self.members: list[Hover] = []
+
+    def only(self, keep: Hover) -> None:
+        for h in self.members:
+            if h is not keep:
+                h.set(False)
+
+
+def bind_hover(widget, on_enter: Callable[[], None], on_leave: Callable[[], None],
+               group: HoverGroup | None = None) -> Hover:
     """카드 안 어느 요소 위에 있어도 '올라가 있음'으로 본다.
 
     자식 위젯으로 들어갈 때도 부모에서 <Leave>가 나므로, 그때 포인터가 실제로
     바깥에 있을 때만 on_leave를 부른다. 그래서 요소 사이를 움직여도 깜빡이지 않는다.
     """
-    state = {"inside": False}
-
-    def enter(_event=None):
-        if not state["inside"]:
-            state["inside"] = True
-            on_enter()
+    hover = Hover(widget, on_enter, on_leave, group)
 
     def leave(_event=None):
-        if pointer_inside(widget):
-            return
-        if state["inside"]:
-            state["inside"] = False
-            on_leave()
+        if not pointer_inside(widget):
+            hover.set(False)
 
-    bind_tree(widget, "<Enter>", enter)
+    bind_tree(widget, "<Enter>", lambda e: hover.set(True))
     bind_tree(widget, "<Leave>", leave)
+    return hover
 
 
 def widget_scaling(widget) -> float:

@@ -8,7 +8,7 @@ import customtkinter as ctk
 
 from ...core import colors
 from .. import theme as t
-from .common import bind_hover, bind_tree, elide, label, widget_scaling
+from .common import HoverGroup, bind_hover, bind_tree, elide, label, widget_scaling
 
 CARD_H = 88
 CARD_MIN_W = 150
@@ -26,7 +26,8 @@ class SubjectCard(ctk.CTkFrame):
 
     def __init__(self, master, name: str, color: str,
                  on_menu: Callable[[], None] | None = None,
-                 on_click: Callable[[], None] | None = None):
+                 on_click: Callable[[], None] | None = None,
+                 hover_group: HoverGroup | None = None):
         super().__init__(master, width=CARD_MIN_W, height=CARD_H, fg_color=t.SURFACE, border_width=1,
                          border_color=t.BORDER, corner_radius=t.R_CARD)
         self._full_name = name
@@ -51,7 +52,7 @@ class SubjectCard(ctk.CTkFrame):
 
         if self._hoverable:
             bind_tree(self, "<Button-1>", lambda e: on_click(), skip=[self._menu] if self._menu else [])
-            bind_hover(self, lambda: self._paint(True), lambda: self._paint(False))
+            bind_hover(self, lambda: self._paint(True), lambda: self._paint(False), hover_group)
         self._paint(False)
         self.bind("<Configure>", self._fit_name)
 
@@ -85,13 +86,14 @@ class SubjectCard(ctk.CTkFrame):
 class AddSlot(ctk.CTkFrame):
     """'+ 과목 추가' 칸."""
 
-    def __init__(self, master, on_click: Callable[[], None], height: int = CARD_H):
+    def __init__(self, master, on_click: Callable[[], None], height: int = CARD_H,
+                 hover_group: HoverGroup | None = None):
         super().__init__(master, width=CARD_MIN_W, height=height, fg_color=t.BG, border_width=1,
                          border_color=t.BORDER_STRONG, corner_radius=t.R_CARD)
         self._text = label(self, "+ 과목 추가", 15, color=t.FAINT)
         self._text.place(relx=0.5, rely=0.5, anchor="center")
         bind_tree(self, "<Button-1>", lambda e: on_click())
-        bind_hover(self, lambda: self._paint(True), lambda: self._paint(False))
+        bind_hover(self, lambda: self._paint(True), lambda: self._paint(False), hover_group)
 
     def _paint(self, hover: bool) -> None:
         self.configure(fg_color=t.GRAY_100 if hover else t.BG)

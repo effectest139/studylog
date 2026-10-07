@@ -5,7 +5,7 @@ from __future__ import annotations
 import customtkinter as ctk
 
 from .. import theme as t
-from ..widgets.common import Button, hline
+from ..widgets.common import Button, Hover, hline
 
 
 class ModalDialog(ctk.CTkToplevel):
@@ -17,6 +17,9 @@ class ModalDialog(ctk.CTkToplevel):
 
     # 되돌릴 수 없는 동작(삭제·초기화)의 확인창은 False로 두어 마우스로만 확인하게 한다
     confirm_on_enter = True
+
+    # 지금 떠 있는 대화상자들(대화상자 위에 대화상자가 뜰 수 있다)
+    _open: list[ModalDialog] = []
 
     def __init__(self, parent, title: str, width: int):
         super().__init__(parent, fg_color=t.SURFACE)
@@ -62,6 +65,9 @@ class ModalDialog(ctk.CTkToplevel):
     # --- 열기/닫기 ---
 
     def show(self) -> None:
+        # 떠 있는 동안 뒤 창은 <Leave>를 못 받으니 호버를 먼저 모두 끈다
+        ModalDialog._open.append(self)
+        Hover.reset_all()
         self.update_idletasks()
         self._center_on_parent()
         self.deiconify()
@@ -88,13 +94,25 @@ class ModalDialog(ctk.CTkToplevel):
         except Exception:
             pass
         parent = self._parent
+        if self in ModalDialog._open:
+            ModalDialog._open.remove(self)
+        root = self._root()
         self.destroy()
+        # 창이 완전히 사라진 뒤 실제 마우스 위치로 호버를 맞춘다.
+        # 닫으면서 바로 다른 대화상자를 여는 경우(과목 수정 → 삭제 확인)는 그 대화상자가 닫힐 때 맞춘다.
+        root.after_idle(ModalDialog._sync_hovers)
         # 대화상자 위에 뜬 대화상자였으면 뒤 대화상자가 다시 모달이 된다
         if isinstance(parent, ModalDialog) and parent.winfo_exists():
             parent.grab_set()
             parent.focus_force()
         elif parent.winfo_exists():
             parent.winfo_toplevel().focus_force()
+
+    @staticmethod
+    def _sync_hovers() -> None:
+        ModalDialog._open = [d for d in ModalDialog._open if d.winfo_exists()]
+        if not ModalDialog._open:
+            Hover.sync_all()
 
     def _on_return(self, _event=None):
         if not self.confirm_on_enter:

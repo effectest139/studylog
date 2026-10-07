@@ -13,7 +13,7 @@ from ...core.store import MAX_SUBJECTS
 from .. import theme as t
 from ..dialogs.confirm import ConfirmDialog
 from ..dialogs.subject_dialog import SubjectDialog
-from ..widgets.common import Badge, Dot, bind_hover, bind_tree, card, label
+from ..widgets.common import Badge, Dot, HoverGroup, bind_hover, bind_tree, card, label
 from ..widgets.subject_card import AddSlot, SubjectCard
 from .base import Page
 
@@ -138,12 +138,14 @@ class HomePage(Page):
         grid = ctk.CTkFrame(master, fg_color="transparent")
         grid.pack(fill="x")
         grid.grid_columnconfigure(tuple(range(COLUMNS)), weight=1, uniform="subject")
+        group = HoverGroup()  # 카드와 '과목 추가' 칸 중 호버는 하나만
         cells = [SubjectCard(grid, s.name, s.color,
                              on_menu=lambda s=s: self._edit(s),
-                             on_click=lambda s=s: self.app.start_study(s.id))
+                             on_click=lambda s=s: self.app.start_study(s.id),
+                             hover_group=group)
                  for s in subjects]
         if n < MAX_SUBJECTS:
-            cells.append(AddSlot(grid, self._add))
+            cells.append(AddSlot(grid, self._add, hover_group=group))
         for i, cell in enumerate(cells):
             col = i % COLUMNS
             cell.grid(row=i // COLUMNS, column=col, sticky="ew", pady=(0, 16),
