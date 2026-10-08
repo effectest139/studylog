@@ -13,7 +13,8 @@ from ...core.store import MAX_SUBJECTS
 from .. import theme as t
 from ..dialogs.confirm import ConfirmDialog
 from ..dialogs.subject_dialog import SubjectDialog
-from ..widgets.common import Badge, Dot, HoverGroup, bind_hover, bind_tree, card, label, widget_scaling
+from ..widgets.common import (Dot, HoverGroup, bind_hover, bind_tree, card, label, make_clickable,
+                             widget_scaling)
 from ..widgets.subject_card import AddSlot, SubjectCard
 from .base import Page
 
@@ -88,6 +89,7 @@ class HomePage(Page):
         top = ctk.CTkFrame(inner, fg_color="transparent")
         top.pack(fill="x")
         label(top, "주간 목표", 14, color=t.MUTED).pack(side="left", anchor="s")
+        link = None
 
         if not g.has_goal:
             link = label(top, "목표를 설정해 보세요 →", 14, bold=True, color=t.PRIMARY, cursor="hand2")
@@ -120,6 +122,13 @@ class HomePage(Page):
             # 0이어도 막대 끝에 점이 남지 않게 채움색을 배경색과 같게 한다
             bar.configure(progress_color=t.PRIMARY_SOFT)
         label(inner, sub, 12, color=t.MUTED).pack(anchor="w")
+
+        # 칸 어디를 눌러도 목표 페이지로(목표 페이지 배너와 같은 식의 호버: 바탕이 한 단계 진해짐).
+        # '목표를 설정해 보세요 →'는 따로 목표 수정창을 연다
+        make_clickable(box, lambda: self.app.screen.show_page("goal"),
+                       lambda: box.configure(fg_color=t.GRAY_100),
+                       lambda: box.configure(fg_color=t.SURFACE),
+                       skip=[link] if link is not None else [])
 
     # --- 과목 ---
 
