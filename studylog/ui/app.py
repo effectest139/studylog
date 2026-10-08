@@ -172,7 +172,7 @@ class App(ctk.CTk):
             # --data로 다른 파일을 열었을 때: 그 파일만 비운다는 것을 알려 준다
             note += f"\n대상 파일: {self.store.path.name} (실제 데이터는 그대로예요)"
         ConfirmDialog(self, "모든 데이터를 초기화할까요?", "모든 기록·목표·과목이 삭제되고 되돌릴 수 없어요",
-                      "초기화", self._reset, width=420, note=note,
+                      "초기화", self._reset, width=420, note=note, type_to_confirm="초기화",
                       rows=[("공부 기록", f"{summary.sessions}개"), ("과목", f"{summary.subjects}개"),
                             ("목표", "주간 · 과목별 전체" if summary.has_goals else "없음")])
 
