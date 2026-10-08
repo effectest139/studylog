@@ -13,7 +13,7 @@ from ...core.store import MAX_SUBJECTS
 from .. import theme as t
 from ..dialogs.confirm import ConfirmDialog
 from ..dialogs.subject_dialog import SubjectDialog
-from ..widgets.common import Badge, Dot, HoverGroup, bind_hover, bind_tree, card, label
+from ..widgets.common import Badge, Dot, HoverGroup, bind_hover, bind_tree, card, label, widget_scaling
 from ..widgets.subject_card import AddSlot, SubjectCard
 from .base import Page
 
@@ -46,17 +46,20 @@ class HomePage(Page):
     def _header(self, master, today: date, streak: int) -> None:
         row = ctk.CTkFrame(master, fg_color="transparent")
         row.pack(fill="x")
-        left = ctk.CTkFrame(row, fg_color="transparent")
-        left.pack(side="left", anchor="n")
-        label(left, f"안녕하세요, {self.store.name}님", 26, bold=True).pack(anchor="w")
-        label(left, fmt.date_long(today), 14, color=t.MUTED).pack(anchor="w", pady=(6, 0))
-
+        # 배지를 먼저 놓아야 이름이 길 때 배지가 눌리지 않고 인사말이 줄을 바꾼다
         on = streak > 0
         pill = ctk.CTkFrame(row, height=36, corner_radius=18, fg_color=t.ACCENT if on else t.GRAY_100)
-        pill.pack(side="right", anchor="n")
+        pill.pack(side="right", anchor="n", padx=(24, 0))
         Dot(pill, "#FFFFFF" if on else t.GHOST, size=8).pack(side="left", padx=(16, 8), pady=14)
         label(pill, f"연속 {streak}일 공부 중" if on else "연속 0일", 14, bold=True,
               color="#FFFFFF" if on else t.MUTED).pack(side="left", padx=(0, 16))
+
+        left = ctk.CTkFrame(row, fg_color="transparent")
+        left.pack(side="left", anchor="n", fill="x", expand=True)
+        title = label(left, f"안녕하세요, {self.store.name}님", 26, bold=True, justify="left")
+        title.pack(anchor="w")
+        label(left, fmt.date_long(today), 14, color=t.MUTED).pack(anchor="w", pady=(6, 0))
+        _wrap_to_width(left, title)
 
     # --- 요약 3칸 ---
 
@@ -196,3 +199,13 @@ class HomePage(Page):
     def _save(self, action, *args) -> None:
         if self.app.run_safely(action, *args):
             self.refresh()
+
+
+def _wrap_to_width(box, *labels) -> None:
+    """이름이 길면(최대 20자) 인사말을 자르지 않고 box 폭에 맞춰 줄을 바꾼다."""
+    def fit(_event=None):
+        width = box.winfo_width() / widget_scaling(box)
+        if width > 100:
+            for lb in labels:
+                lb.configure(wraplength=width)
+    box.bind("<Configure>", fit, add="+")

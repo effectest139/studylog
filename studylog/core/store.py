@@ -15,7 +15,8 @@ from . import storage
 from .models import AppData, Session, Subject
 
 MAX_SUBJECTS = 10
-NAME_MAX_LEN = 10
+NAME_MAX_LEN = 20          # 사용자 이름
+SUBJECT_NAME_MAX_LEN = 10  # 과목 이름(카드·목록 폭이 좁다)
 MIN_SESSION_SECONDS = 60  # 1분 미만 기록은 저장하지 않는다
 
 
@@ -25,17 +26,17 @@ class ValidationError(ValueError):
 
 # --- 입력 검사 (온보딩처럼 아직 저장하기 전 목록에도 쓰도록 함수로 둔다) ---
 
-def check_name(name: str) -> str | None:
-    """이름·과목명 공통 길이 검사. 문제가 없으면 None."""
+def check_name(name: str, max_len: int = NAME_MAX_LEN) -> str | None:
+    """길이 검사(기본은 사용자 이름 기준). 문제가 없으면 None."""
     n = len(name.strip())
-    if n < 1 or n > NAME_MAX_LEN:
-        return f"1~{NAME_MAX_LEN}자로 입력해 주세요"
+    if n < 1 or n > max_len:
+        return f"1~{max_len}자로 입력해 주세요"
     return None
 
 
 def check_subject_name(name: str, existing_names: Iterable[str]) -> str | None:
     """길이 + 중복 검사. existing_names에는 자기 자신을 빼고 넘긴다."""
-    err = check_name(name)
+    err = check_name(name, SUBJECT_NAME_MAX_LEN)
     if err:
         return err
     key = name.strip().casefold()

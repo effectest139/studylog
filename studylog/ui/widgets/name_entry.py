@@ -1,4 +1,4 @@
-"""1~10자 이름 입력칸: 제목 + 입력칸 + 안내/오류 문구 + 글자 수."""
+"""이름 입력칸(최대 글자 수는 max_len): 제목 + 입력칸 + 안내/오류 문구 + 글자 수."""
 
 from __future__ import annotations
 
@@ -17,17 +17,19 @@ class NameEntry(ctk.CTkFrame):
     def __init__(self, master, title: str, hint: str, value: str = "",
                  validator: Callable[[str], str | None] | None = None,
                  on_change: Callable[[], None] | None = None,
-                 height: int = 44, size: int = 15, show_count: bool = False):
+                 height: int = 44, size: int = 15, show_count: bool = False,
+                 max_len: int = NAME_MAX_LEN):
         super().__init__(master, fg_color="transparent")
         self._validator = validator
         self._on_change = on_change
         self._hint = hint
         self._show_count = show_count
         self._focused = False
+        self._max_len = max_len
 
         label(self, title, 14, bold=True).pack(anchor="w")
 
-        self.var = ctk.StringVar(value=value[:NAME_MAX_LEN])
+        self.var = ctk.StringVar(value=value[:max_len])
         self.entry = ctk.CTkEntry(
             self, textvariable=self.var, height=height, corner_radius=t.R_CTRL,
             border_width=1, border_color=t.BORDER_STRONG, fg_color=t.SURFACE,
@@ -71,8 +73,8 @@ class NameEntry(ctk.CTkFrame):
 
     def _changed(self, *_):
         text = self.var.get()
-        if len(text) > NAME_MAX_LEN:
-            self.var.set(text[:NAME_MAX_LEN])  # 다시 _changed가 불린다
+        if len(text) > self._max_len:
+            self.var.set(text[:self._max_len])  # 다시 _changed가 불린다
             return
         self._refresh()
         if self._on_change:
@@ -89,4 +91,4 @@ class NameEntry(ctk.CTkFrame):
                                  border_color=t.PRIMARY if self._focused else t.BORDER_STRONG)
             self._msg.configure(text=self._hint, text_color=t.MUTED, font=t.font(12))
         if self._show_count:
-            self._count.configure(text=f"{len(self.var.get())}/{NAME_MAX_LEN}")
+            self._count.configure(text=f"{len(self.var.get())}/{self._max_len}")

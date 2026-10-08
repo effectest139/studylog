@@ -7,7 +7,7 @@ from typing import Callable
 import customtkinter as ctk
 
 from ...core.colors import next_unused
-from ...core.store import check_subject_name
+from ...core.store import SUBJECT_NAME_MAX_LEN, check_subject_name
 from .. import theme as t
 from ..widgets.color_picker import ColorPicker
 from ..widgets.common import Button, hline, label
@@ -35,7 +35,7 @@ class SubjectDialog(ModalDialog):
         form.pack(fill="x", padx=24, pady=20)
 
         self.name_entry = NameEntry(
-            form, "과목 이름", "1~10자", value=name,
+            form, "과목 이름", f"1~{SUBJECT_NAME_MAX_LEN}자", value=name, max_len=SUBJECT_NAME_MAX_LEN,
             validator=lambda n: check_subject_name(n, other_names),
             on_change=self._update_button)
         self.name_entry.pack(fill="x")

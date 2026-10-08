@@ -49,10 +49,19 @@ def test_onboarding_rejects_duplicate_subjects(path):
         DataStore.open(path).complete_onboarding("a", [("수학", "#000000"), ("수학 ", "#111111")])
 
 
-@pytest.mark.parametrize("name", ["", "   ", "가" * 11])
+@pytest.mark.parametrize("name", ["", "   ", "가" * 21])
 def test_name_length(store, name):
     with pytest.raises(ValidationError):
         store.set_name(name)
+
+
+def test_name_can_be_20_but_subject_only_10(store):
+    store.set_name("가" * 20)
+    assert store.name == "가" * 20
+    assert store.check_subject_name("가" * 10) is None
+    assert store.check_subject_name("가" * 11) == "1~10자로 입력해 주세요"
+    with pytest.raises(ValidationError):
+        store.add_subject("가" * 11, PALETTE[5])
 
 
 def test_name_is_trimmed(store):

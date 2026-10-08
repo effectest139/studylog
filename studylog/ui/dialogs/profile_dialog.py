@@ -6,7 +6,7 @@ from typing import Callable
 
 import customtkinter as ctk
 
-from ...core.store import check_name
+from ...core.store import NAME_MAX_LEN, check_name
 from .. import theme as t
 from ..widgets.common import Badge, Button, bind_hover, hline, label
 from ..widgets.name_entry import NameEntry
@@ -25,7 +25,7 @@ class ProfileDialog(ModalDialog):
         top.pack(fill="x", padx=24, pady=24)
         self._avatar = Badge(top, name[:1], 64, 32, t.PRIMARY, "#FFFFFF", 24)
         self._avatar.pack()
-        self.name_entry = NameEntry(top, "이름", "1~10자 · 홈 인사말과 사이드바에 표시돼요", value=name,
+        self.name_entry = NameEntry(top, "이름", f"1~{NAME_MAX_LEN}자 · 홈 인사말과 사이드바에 표시돼요", value=name,
                                     validator=check_name, on_change=self._changed)
         self.name_entry.pack(fill="x", pady=(20, 0))
 

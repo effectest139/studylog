@@ -7,7 +7,7 @@ from typing import Callable
 import customtkinter as ctk
 
 from ...core.colors import next_unused
-from ...core.store import MAX_SUBJECTS, DataStore, ValidationError, check_name
+from ...core.store import MAX_SUBJECTS, NAME_MAX_LEN, DataStore, ValidationError, check_name
 from .. import theme as t
 from ..dialogs.confirm import AlertDialog
 from ..dialogs.subject_dialog import SubjectDialog
@@ -75,7 +75,7 @@ class OnboardingScreen(ctk.CTkFrame):
         _progress(inner, 1).pack(fill="x")
         _heading(inner, "반가워요! 이름을 알려 주세요", "홈 인사말과 프로필에 표시돼요").pack(
             fill="x", pady=(28, 0))
-        self._name_entry = NameEntry(inner, "이름", "1~10자", value=self.name,
+        self._name_entry = NameEntry(inner, "이름", f"1~{NAME_MAX_LEN}자", value=self.name,
                                      validator=check_name, on_change=self._update_next,
                                      height=48, size=16, show_count=True)
         self._name_entry.pack(fill="x", pady=(28, 0))
