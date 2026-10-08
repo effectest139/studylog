@@ -1,7 +1,7 @@
 # 사용자 데이터 (코드와 분리)
 data/
 
-# 오류 기록 (더블클릭 실행 시)
+# 오류 기록 (studylog/errorlog.py)
 logs/
 
 # 파이썬

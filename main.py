@@ -1,6 +1,6 @@
 """StudyLog 실행: python main.py [--data 경로]
 
-더블클릭으로 실행하려면 'StudyLog 실행.bat'(실제 데이터) 또는 'StudyLog 시연용.bat'(가짜 데이터).
+콘솔 창 없이 실행하려면 pythonw main.py. 오류는 logs/error.log에 남는다.
 """
 
 from __future__ import annotations
