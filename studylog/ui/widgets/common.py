@@ -10,6 +10,10 @@ import customtkinter as ctk
 from .. import theme as t
 
 
+# 누른 뒤 이만큼(배율 적용 전 px) 움직이면 클릭이 아니라 끌기로 본다(drag_scroll과 같이 쓴다)
+DRAG_START_PX = 6
+
+
 # --- 이벤트 도우미 ---
 
 def _ctk_tree(widget) -> Iterable:
@@ -132,9 +136,30 @@ def make_clickable(widget, on_click: Callable[[], None], on_enter: Callable[[], 
 
     안쪽 위젯은 커서를 따로 정하지 않으면 부모 것을 따르므로 커서는 맨 바깥에만 준다.
     skip에 넣은 위젯(안쪽의 다른 링크 등)을 누르면 on_click을 부르지 않는다.
+    버튼처럼 손을 뗄 때 실행한다. 누른 채 DRAG_START_PX 이상 움직였거나(끌기 스크롤)
+    밖에서 손을 떼면 실행하지 않는다.
     """
+    pressed: list = []  # [(누른 화면 x, y)] — 움직여서 취소되면 비운다
+
+    def press(e):
+        pressed[:] = [(e.x_root, e.y_root)]
+
+    def motion(e):
+        if pressed:
+            x, y = pressed[0]
+            if max(abs(e.x_root - x), abs(e.y_root - y)) >= DRAG_START_PX * widget_scaling(widget):
+                pressed.clear()
+
+    def release(_e):
+        if pressed and pointer_inside(widget):
+            pressed.clear()
+            on_click()
+        pressed.clear()
+
     widget.configure(cursor="hand2")
-    bind_tree(widget, "<Button-1>", lambda e: on_click(), skip=skip)
+    bind_tree(widget, "<ButtonPress-1>", press, skip=skip)
+    bind_tree(widget, "<B1-Motion>", motion, skip=skip)
+    bind_tree(widget, "<ButtonRelease-1>", release, skip=skip)
     return bind_hover(widget, on_enter, on_leave)
 
 

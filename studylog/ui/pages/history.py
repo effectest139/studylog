@@ -13,8 +13,8 @@ from ...core.models import Session
 from .. import images
 from .. import theme as t
 from ..dialogs.confirm import ConfirmDialog
-from ..widgets.common import Button, card, elide, label, widget_scaling
-from ..widgets.drag_scroll import DRAG_START_PX, DragScroll
+from ..widgets.common import DRAG_START_PX, Button, card, elide, label, widget_scaling
+from ..widgets.drag_scroll import DragScroll
 from .base import Page
 
 DAYS_PER_LOAD = 14  # 처음엔 최근 14일만 그리고 '더 보기'로 늘린다(위젯이 많으면 느려짐)
@@ -204,10 +204,8 @@ class HistoryPage(Page):
                                               scrollbar_button_hover_color=t.BORDER_STRONG)
         self._scroll.pack(fill="both", expand=True, padx=(24, 8), pady=8)
         # 빈 곳을 누른 채 끌어도 스크롤된다. '삭제' 위에서 시작한 끌기는 무시(실수로 삭제되지 않게)
-        drag = DragScroll(self._scroll, can_start=lambda e: not (
+        drag = DragScroll(self._scroll, ignore=lambda e: (
             isinstance(e.widget, DayBlock) and e.widget.on_delete_button()))
-        drag.attach(self._scroll)
-        drag.attach(self._scroll._parent_canvas)
 
         today = date.today()
         scale = widget_scaling(self)
@@ -217,10 +215,10 @@ class HistoryPage(Page):
             # 캔버스(tk 위젯)는 pack 여백에도 배율이 곱해지지 않는다
             block.pack(fill="x", padx=(0, round(16 * scale)),
                        pady=(round((4 if i == 0 else 12) * scale), round(12 * scale)))
-            drag.attach(block)
         if has_more:
             Button(self._scroll, "더 보기", kind="secondary", height=40, size=14,
                    command=self._load_more).pack(fill="x", padx=(0, 16), pady=(12, 12))
+        drag.attach()
 
     def _load_more(self) -> None:
         self._days_shown += DAYS_PER_LOAD

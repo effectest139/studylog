@@ -10,6 +10,7 @@ import customtkinter as ctk
 from ...core import fmt, stats
 from .. import theme as t
 from ..widgets.common import Button, Dot, card, label, make_clickable
+from ..widgets.drag_scroll import DragScroll
 from .base import Page
 
 BANNER_SOFT = "#C7D2FE"   # 배너 위 연한 글자
@@ -137,3 +138,4 @@ class GoalsPage(Page):
                 detail = f"목표 없음 · 이번 주 {fmt.duration(done, empty='0분')}"
             label(top, detail, 14, color=t.MUTED).pack(side="right")
             _bar(row, g.ratio, s.color, t.GRAY_100, 10).pack(fill="x", pady=(10, 0))
+        DragScroll(rows_box).attach()  # 과목이 많으면 빈 곳을 끌어서도 스크롤

@@ -10,6 +10,7 @@ from ...core import fmt
 from ...core.store import DataStore
 from .. import theme as t
 from ..widgets.common import Dot, hline, label
+from ..widgets.drag_scroll import DragScroll
 from .base import ModalDialog
 
 MAX_HOURS = 168          # 일주일
@@ -139,6 +140,9 @@ class GoalDialog(ModalDialog):
         if not subjects:
             label(rows_box, "과목이 없어요. 홈에서 과목을 추가해 주세요", 13, color=t.MUTED).pack(
                 anchor="w", pady=12)
+        if isinstance(rows_box, ctk.CTkScrollableFrame):
+            # 시·분 입력칸(CTkEntry)에서 시작한 끌기는 DragScroll이 무시한다(글자 입력·선택이 우선)
+            DragScroll(rows_box).attach()
 
         label(form, "분은 0~59 · 과목별 합계가 전체보다 커도 저장할 수 있어요", 12,
               color=t.MUTED).pack(anchor="w", pady=(12, 0))
