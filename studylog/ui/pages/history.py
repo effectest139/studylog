@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import tkinter as tk
 from datetime import date
+from typing import Callable
 
 import customtkinter as ctk
 
@@ -13,6 +14,7 @@ from .. import images
 from .. import theme as t
 from ..dialogs.confirm import ConfirmDialog
 from ..widgets.common import Button, card, elide, label, widget_scaling
+from ..widgets.drag_scroll import DRAG_START_PX, DragScroll
 from .base import Page
 
 DAYS_PER_LOAD = 14  # 처음엔 최근 14일만 그리고 '더 보기'로 늘린다(위젯이 많으면 느려짐)
@@ -36,8 +38,10 @@ class DayBlock(tk.Canvas):
         px = self._px
         super().__init__(master, height=px(HEAD_H + len(items) * (ROW_H + 1)), bg=t.SURFACE,
                          bd=0, highlightthickness=0)
+        self._actions: dict[str, Callable[[], None]] = {}  # '삭제' 태그 → 실행할 일
         self._right: list[tuple[int, int, str]] = []  # (항목, 오른쪽 끝에서 떨어진 거리, 'x'|'line')
         self._hover_tag: str | None = None
+        self._pressed: tuple[str, int, int] | None = None  # 누른 '삭제'의 (태그, 화면 x, y)
 
         mid = px(HEAD_H) / 2
         self._text(0, mid, fmt.date_short(day, today), 15, bold=True)
@@ -52,6 +56,8 @@ class DayBlock(tk.Canvas):
             self._row(y + 1, session, subjects[session.subject_id], f"del{i}", on_delete)
             y += px(ROW_H + 1)
         self.bind("<Configure>", self._place_right)
+        self.bind("<B1-Motion>", self._cancel_if_moved, add="+")
+        self.bind("<ButtonRelease-1>", self._release, add="+")
 
     def _px(self, value: float) -> int:
         return round(value * self._scale)
@@ -89,7 +95,25 @@ class DayBlock(tk.Canvas):
 
         self.tag_bind(tag, "<Enter>", lambda e: self._set_hover(tag))
         self.tag_bind(tag, "<Leave>", lambda e: self._set_hover(None))
-        self.tag_bind(tag, "<Button-1>", lambda e: (self._set_hover(None), on_delete(session, subject)))
+        # 손을 뗄 때 실행한다: 누른 채 밖으로 나가거나 조금 이상 움직였으면 취소
+        self.tag_bind(tag, "<ButtonPress-1>", lambda e: setattr(self, "_pressed", (tag, e.x_root, e.y_root)))
+        self._actions[tag] = lambda: on_delete(session, subject)
+
+    def on_delete_button(self) -> bool:
+        """마우스가 지금 '삭제' 위에 있나(끌기 스크롤을 시작하지 않는다)."""
+        return self._hover_tag is not None
+
+    def _cancel_if_moved(self, event) -> None:
+        if self._pressed:
+            _, x, y = self._pressed
+            if max(abs(event.x_root - x), abs(event.y_root - y)) >= DRAG_START_PX * self._scale:
+                self._pressed = None
+
+    def _release(self, _event) -> None:
+        pressed, self._pressed = self._pressed, None
+        if pressed and pressed[0] == self._hover_tag:
+            self._set_hover(None)
+            self._actions[pressed[0]]()
 
     def _set_hover(self, tag: str | None) -> None:
         if self._hover_tag and self.winfo_exists():
@@ -179,6 +203,11 @@ class HistoryPage(Page):
                                               scrollbar_button_color=t.BORDER,
                                               scrollbar_button_hover_color=t.BORDER_STRONG)
         self._scroll.pack(fill="both", expand=True, padx=(24, 8), pady=8)
+        # 빈 곳을 누른 채 끌어도 스크롤된다. '삭제' 위에서 시작한 끌기는 무시(실수로 삭제되지 않게)
+        drag = DragScroll(self._scroll, can_start=lambda e: not (
+            isinstance(e.widget, DayBlock) and e.widget.on_delete_button()))
+        drag.attach(self._scroll)
+        drag.attach(self._scroll._parent_canvas)
 
         today = date.today()
         scale = widget_scaling(self)
@@ -188,6 +217,7 @@ class HistoryPage(Page):
             # 캔버스(tk 위젯)는 pack 여백에도 배율이 곱해지지 않는다
             block.pack(fill="x", padx=(0, round(16 * scale)),
                        pady=(round((4 if i == 0 else 12) * scale), round(12 * scale)))
+            drag.attach(block)
         if has_more:
             Button(self._scroll, "더 보기", kind="secondary", height=40, size=14,
                    command=self._load_more).pack(fill="x", padx=(0, 16), pady=(12, 12))
