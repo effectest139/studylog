@@ -9,7 +9,7 @@ import customtkinter as ctk
 
 from ...core import fmt, stats
 from .. import theme as t
-from ..widgets.common import Button, Dot, card, label
+from ..widgets.common import Button, Dot, card, label, make_clickable
 from .base import Page
 
 BANNER_SOFT = "#C7D2FE"   # 배너 위 연한 글자
@@ -69,6 +69,7 @@ class GoalsPage(Page):
             label(right, "아직 주간 목표가 없어요", 17, bold=True, color="#FFFFFF").pack(anchor="w")
             label(right, "'목표 수정'에서 이번 주에 공부할 시간을 정해 보세요", 13,
                   color=BANNER_SOFT).pack(anchor="w", pady=(8, 0))
+            self._clickable(banner)
             return
 
         label(left, f"주간 목표 {fmt.duration(g.goal_seconds)}", 14, color=BANNER_SOFT).pack(anchor="w")
@@ -92,6 +93,13 @@ class GoalsPage(Page):
         else:
             tip = "이번 주 목표를 달성했어요! 잘하고 있어요"
         label(right, tip, 13, color=BANNER_SOFT).pack(anchor="w")
+        self._clickable(banner)
+
+    def _clickable(self, banner) -> None:
+        """배너 어디를 눌러도 목표 수정창. 올리면 조금 진한 보라."""
+        make_clickable(banner, self.app.open_goal_editor,
+                       lambda: banner.configure(fg_color=t.PRIMARY_HOVER),
+                       lambda: banner.configure(fg_color=t.PRIMARY))
 
     # --- 과목별 목표 ---
 

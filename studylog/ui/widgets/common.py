@@ -126,6 +126,18 @@ def bind_hover(widget, on_enter: Callable[[], None], on_leave: Callable[[], None
     return hover
 
 
+def make_clickable(widget, on_click: Callable[[], None], on_enter: Callable[[], None],
+                   on_leave: Callable[[], None], skip: Iterable = ()) -> Hover:
+    """카드·배너 전체를 누를 수 있게 한다: 손가락 커서 + 호버 + 어디를 눌러도 on_click.
+
+    안쪽 위젯은 커서를 따로 정하지 않으면 부모 것을 따르므로 커서는 맨 바깥에만 준다.
+    skip에 넣은 위젯(안쪽의 다른 링크 등)을 누르면 on_click을 부르지 않는다.
+    """
+    widget.configure(cursor="hand2")
+    bind_tree(widget, "<Button-1>", lambda e: on_click(), skip=skip)
+    return bind_hover(widget, on_enter, on_leave)
+
+
 def widget_scaling(widget) -> float:
     return ctk.ScalingTracker.get_widget_scaling(widget)
 
