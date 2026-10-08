@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from datetime import date, timedelta
 from typing import Callable
 
@@ -10,7 +11,8 @@ import customtkinter as ctk
 from ...core import advice, fmt, stats
 from .. import charts
 from .. import theme as t
-from ..widgets.common import Dot, card, elide, label, widget_scaling
+from ..motion import Tween
+from ..widgets.common import Dot, bind_tree, card, elide, label, widget_scaling
 from .base import Page
 
 LEGEND_MAX = 5          # 범례·도넛에 따로 보여 줄 과목 수. 나머지는 '기타'로 묶는다
@@ -21,6 +23,8 @@ DONUT = 108
 # (디자인은 주간 1.35fr / 월간 1.2fr, 차트 높이도 달랐다)
 TOP_WEIGHTS = (135, 100)
 CHART_H = 226
+BOUNCE = 5            # 그래프 카드를 누르면 이만큼 위로 튀었다가 돌아온다
+BOUNCE_SECONDS = 0.3
 TAG_COLORS = {          # 조언 카드 머리표 (배경, 글자) — 디자인 06의 색
     advice.PINK: ("#FCE7F3", "#BE185D"),
     advice.TEAL: ("#CCFBF1", "#0F766E"),
@@ -53,8 +57,11 @@ class AnalysisPage(Page):
         super().__init__(master, app)
         self.period = "week"
         self._box: ctk.CTkFrame | None = None
+        # 모션 객체를 여기 붙잡아 둔다(matplotlib은 이벤트에 연결한 메서드를 약하게만 참조함)
+        self._motions: list = []
 
     def refresh(self) -> None:
+        self._motions = []
         if self._box is not None:
             self._box.destroy()
         self._box = ctk.CTkFrame(self, fg_color="transparent")
@@ -75,17 +82,50 @@ class AnalysisPage(Page):
         top.grid_columnconfigure(0, weight=TOP_WEIGHTS[0], uniform="top")
         top.grid_columnconfigure(1, weight=TOP_WEIGHTS[1], uniform="top")
         left, right = card(top), card(top)
-        left.grid(row=0, column=0, sticky="nsew", padx=(0, 20))
-        right.grid(row=0, column=1, sticky="nsew")
+        # 위 여백을 BOUNCE만큼 두고, 튈 때는 위 여백을 아래로 옮긴다(줄 높이가 그대로라 다른 것은 안 움직임)
+        left.grid(row=0, column=0, sticky="nsew", padx=(0, 20), pady=(BOUNCE, 0))
+        right.grid(row=0, column=1, sticky="nsew", pady=(BOUNCE, 0))
 
         if week:
-            self._week_chart(left, sessions, today)
+            bars = self._week_chart(left, sessions, today)
         else:
-            self._month_chart(left, sessions, today)
-        self._shares(right, stats.subject_shares(sessions, first, min(last, today)), subjects)
+            bars = self._month_chart(left, sessions, today)
+        donut = self._shares(right, stats.subject_shares(sessions, first, min(last, today)), subjects)
+        # 처음 들어올 때·주간/월간을 바꿀 때(이때마다 새로 그린다) 모션. 카드를 누르면 다시 재생
+        grow, fill = charts.BarGrowth(bars), charts.DonutFill(donut)
+        self._motions += [grow, fill]
+        grow.play(then=fill.play)  # 막대 차트가 준비되는 순간 도넛도 같이 시작
+        self._clickable_card(left, grow.play)
+        self._clickable_card(right, fill.play)
 
         label(self._box, "학습 조언", 15, bold=True).pack(anchor="w", pady=(20, 12))
         self._advice(sessions, today)
+
+    def _clickable_card(self, box, replay) -> None:
+        bounce = Tween(box, BOUNCE_SECONDS, lambda p: self._bounce_frame(box, p), ease=lambda p: p)
+        self._motions.append(bounce)
+
+        def on_click(_event=None):
+            bounce.start()
+            replay()
+
+        box.configure(cursor="hand2")
+        bind_tree(box, "<Button-1>", on_click)
+        # 차트(matplotlib 캔버스)는 CTk 위젯이 아니라 bind_tree가 닿지 않는다
+        for chart in self._chart_widgets(box):
+            chart.bind("<Button-1>", on_click, add="+")
+
+    @staticmethod
+    def _chart_widgets(box):
+        for child in box.winfo_children():
+            if child.winfo_class() == "Canvas" and not isinstance(child, ctk.CTkCanvas):
+                yield child
+            yield from AnalysisPage._chart_widgets(child)
+
+    @staticmethod
+    def _bounce_frame(box, p: float) -> None:
+        lift = round(BOUNCE * math.sin(math.pi * p))  # 0 → BOUNCE → 0
+        box.grid_configure(pady=(BOUNCE - lift, lift))
 
     def _set_period(self, period: str) -> None:
         if period != self.period:
@@ -144,7 +184,7 @@ class AnalysisPage(Page):
             value_labels=[fmt.duration_short(v) if v else "" for v in values],
             empty_text=None if any(values) else "요일별 공부 시간이 여기에 표시돼요",
             bar_width=0.42)
-        self._place_chart(master, fig, height=CHART_H)
+        return self._place_chart(master, fig, height=CHART_H)
 
     def _month_chart(self, master, sessions, today: date) -> None:
         weeks = stats.month_weeks(sessions, today)
@@ -161,16 +201,18 @@ class AnalysisPage(Page):
                           for v, (a, _, _) in zip(values, weeks)],
             empty_text=None if any(values) else "주차별 공부 시간이 여기에 표시돼요",
             bar_width=0.5)
-        self._place_chart(master, fig, height=CHART_H)
+        return self._place_chart(master, fig, height=CHART_H)
 
-    def _place_chart(self, master, fig, height: int) -> None:
+    def _place_chart(self, master, fig, height: int):
         holder = ctk.CTkFrame(master, fg_color=t.SURFACE)
         holder.pack(fill="x", padx=16, pady=(4, 16))
-        charts.embed(fig, holder, height).get_tk_widget().pack(fill="x")
+        canvas = charts.embed(fig, holder, height)
+        canvas.get_tk_widget().pack(fill="x")
+        return canvas
 
     # --- 과목별 비율 ---
 
-    def _shares(self, master, shares: list[tuple[str, int]], subjects) -> None:
+    def _shares(self, master, shares: list[tuple[str, int]], subjects):
         head = ctk.CTkFrame(master, fg_color="transparent")
         head.pack(fill="x", padx=24, pady=(20, 0))
         label(head, "과목별 비율", 15, bold=True).pack(side="left")
@@ -186,7 +228,8 @@ class AnalysisPage(Page):
         donut_box = ctk.CTkFrame(body, fg_color=t.SURFACE, width=DONUT, height=DONUT)
         donut_box.pack(side="left", anchor="center")
         fig = charts.donut_chart([r[2] for r in rows], [r[1] for r in rows])
-        widget = charts.embed(fig, donut_box, DONUT).get_tk_widget()
+        canvas = charts.embed(fig, donut_box, DONUT)
+        widget = canvas.get_tk_widget()
         widget.configure(width=round(DONUT * charts.widget_scaling(donut_box)))
         widget.pack()
 
@@ -195,7 +238,7 @@ class AnalysisPage(Page):
         if not rows:
             label(legend, "과목별로 공부하면 비율을 보여 드려요", 14, color=t.MUTED,
                   wraplength=180, justify="left").pack(anchor="w", expand=True)
-            return
+            return canvas
         label(head, "시간 많은 순", 12, color=t.MUTED).pack(side="right")
         center = ctk.CTkFrame(legend, fg_color="transparent")
         center.pack(fill="x", expand=True)
@@ -217,6 +260,7 @@ class AnalysisPage(Page):
             name_label.pack(side="left")
             name_box.bind("<Configure>", lambda e, lb=name_label, n=name: lb.configure(
                 text=elide(t.font(13), n, e.width / widget_scaling(lb) - 2)))
+        return canvas
 
     # --- 학습 조언 ---
 
