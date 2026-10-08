@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import customtkinter as ctk
 
+from .. import images
 from .. import theme as t
 from ..widgets.common import Button, Hover, hline
 
@@ -25,6 +26,7 @@ class ModalDialog(ctk.CTkToplevel):
         super().__init__(parent, fg_color=t.SURFACE)
         self.withdraw()  # 내용을 다 만들고 가운데로 옮긴 뒤 보인다(깜빡임 방지)
         self.title(title)
+        images.set_window_icon(self)
         self.resizable(False, False)
         self.transient(parent.winfo_toplevel())
         self._parent = parent

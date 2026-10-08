@@ -208,3 +208,9 @@ def test_reset_only_clears_the_opened_file(tmp_path):
     b.reset()
     assert not DataStore.open(dev).is_onboarded
     assert DataStore.open(real).name == "진짜"
+
+
+def test_app_home_source_vs_exe(tmp_path):
+    assert storage.app_home(False, r"C:\Users\a\AppData\Roaming", tmp_path) == tmp_path
+    assert storage.app_home(True, str(tmp_path), tmp_path / "x") == tmp_path / "StudyLog"
+    assert storage.app_home(True, None).name == "StudyLog"

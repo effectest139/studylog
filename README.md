@@ -13,12 +13,21 @@ Python과 CustomTkinter로 만들었고, 그래프는 matplotlib로 그립니다
 
 과목은 최대 10개까지 만들 수 있고, 1분 미만의 기록은 저장되지 않습니다.
 
-## 실행 환경
+## 다운로드해서 실행하기 (Python 필요 없음)
 
-- Windows 10/11 (글꼴: 맑은 고딕, 타이머: Consolas)
-- Python 3.10 이상 (3.14에서 확인)
+1. [Releases](https://github.com/effectest139/studylog/releases)에서 `StudyLog-<버전>-windows.zip`을 받습니다.
+2. 압축을 풀고 `StudyLog` 폴더 안의 `StudyLog.exe`를 실행합니다. 폴더 안의 다른 파일도 함께 있어야 실행됩니다.
+3. 처음 실행할 때 "Windows의 PC 보호" 창이 뜨면 **추가 정보 → 실행**을 누릅니다.
+   코드 서명을 하지 않은 프로그램이라 나오는 경고입니다.
 
-## 설치와 실행
+기록은 `%APPDATA%\StudyLog\data\studylog.json`에 저장되므로, 새 버전으로 바꿀 때 폴더를 지우고 새로 풀어도 기록은 그대로 남습니다.
+오류가 나면 `%APPDATA%\StudyLog\logs\error.log`에 기록됩니다.
+
+Windows 10/11에서 동작합니다(글꼴: 맑은 고딕, 타이머: Consolas).
+
+## 소스에서 실행하기
+
+Python 3.10 이상이 필요합니다(3.14에서 확인).
 
 ```bash
 git clone https://github.com/effectest139/studylog.git
@@ -33,7 +42,8 @@ python main.py
 
 ## 데이터
 
-- 기록은 `data/studylog.json`에 저장됩니다. 이 폴더는 git에서 제외되어 있습니다.
+- 소스에서 실행하면 기록은 `data/studylog.json`에 저장됩니다. 이 폴더는 git에서 제외되어 있습니다.
+  (exe로 실행하면 `%APPDATA%\StudyLog`에 저장됩니다.)
 - 다른 파일을 쓰려면 `python main.py --data 경로.json`으로 실행합니다.
 - 파일이 깨져서 읽을 수 없으면 원래 파일을 `.corrupt-날짜.json`으로 옮겨 두고 새로 시작합니다.
 - 프로필의 **데이터 초기화**는 지금 연 파일만 비웁니다.
@@ -47,6 +57,16 @@ python main.py --data data/dev.json      # 가짜 기록으로 실행
 ```
 
 `tools/make_fake_data.py`는 실제 데이터 파일(`data/studylog.json`)에는 쓰지 않습니다.
+
+### exe 만들기
+
+```bash
+pip install pyinstaller
+python tools/build_exe.py
+```
+
+`dist/StudyLog/`에 실행 파일 폴더가, `dist/StudyLog-<버전>-windows.zip`에 배포용 압축 파일이 만들어집니다.
+버전은 `studylog/__init__.py`의 `__version__`입니다.
 
 ### 구조
 
@@ -65,7 +85,7 @@ studylog/ui/            화면 (CustomTkinter, matplotlib)
   dialogs/              과목·목표·프로필·확인 대화상자
   widgets/              공통 위젯(과목 카드, 사이드바, 끌어서 스크롤 등)
 tests/                  pytest
-tools/                  개발용 도구
+tools/                  개발용 도구 (가짜 기록, exe 빌드)
 ```
 
 ## 라이선스

@@ -7,6 +7,7 @@ import customtkinter as ctk
 from .. import errorlog
 from ..core import greeting, storage
 from ..core.store import DataStore, ValidationError
+from . import images
 from . import theme as t
 from .dialogs.confirm import AlertDialog, ConfirmDialog
 from .dialogs.goal_dialog import GoalDialog
@@ -107,6 +108,7 @@ class App(ctk.CTk):
         # 홈 인사말 문구는 앱을 켤 때 한 번 골라 두고 화면을 오갈 때 바뀌지 않게 한다
         self.greeting_picks = greeting.pick()
         self.title("StudyLog")
+        images.set_window_icon(self)
         self._fit_scaling_to_screen()
         self.geometry(f"{t.WINDOW_W}x{t.WINDOW_H}")
         self.minsize(t.WINDOW_W, t.WINDOW_H)

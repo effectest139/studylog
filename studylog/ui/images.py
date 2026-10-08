@@ -6,9 +6,22 @@ CTk의 원형 테두리는 작은 크기에서 끊겨 보여서, 크게 그린 �
 from __future__ import annotations
 
 from functools import lru_cache
+from pathlib import Path
 
 import customtkinter as ctk
 from PIL import Image, ImageDraw, ImageTk
+
+# 창·작업 표시줄·exe 아이콘(사이드바 로고와 같은 모양)
+APP_ICON = Path(__file__).resolve().parent / "assets" / "studylog.ico"
+
+
+def set_window_icon(window) -> None:
+    """CTk 기본 아이콘 대신 StudyLog 아이콘. CTk는 iconbitmap이 불렸으면 자기 아이콘으로 덮지 않는다."""
+    try:
+        window.iconbitmap(str(APP_ICON))
+    except Exception:
+        pass  # 아이콘이 없어도 앱은 동작한다
+
 
 _SUPER = 8   # 이 배율로 크게 그린 뒤
 _KEEP = 3    # 이 배율까지만 줄여 둔다(Windows 배율 확대에도 선명하게)

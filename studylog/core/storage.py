@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import time
 from datetime import datetime
 from pathlib import Path
@@ -11,7 +12,24 @@ from pathlib import Path
 from .models import SCHEMA_VERSION, AppData
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_DATA_PATH = PROJECT_ROOT / "data" / "studylog.json"
+
+
+def app_home(frozen: bool, appdata: str | None, project_root: Path = PROJECT_ROOT) -> Path:
+    """데이터·오류 기록을 둘 폴더.
+
+    - 소스로 실행(python main.py): 프로젝트 폴더. 데이터는 data/, 오류는 logs/
+    - exe로 실행(PyInstaller): 프로그램 폴더는 업데이트 때 통째로 바뀌므로
+      사용자별 앱 데이터 폴더 %APPDATA%/StudyLog에 둔다
+    """
+    if not frozen:
+        return project_root
+    base = Path(appdata) if appdata else Path.home() / "AppData" / "Roaming"
+    return base / "StudyLog"
+
+
+IS_FROZEN = bool(getattr(sys, "frozen", False))
+APP_HOME = app_home(IS_FROZEN, os.environ.get("APPDATA"))
+DEFAULT_DATA_PATH = APP_HOME / "data" / "studylog.json"
 
 
 class CorruptDataError(Exception):

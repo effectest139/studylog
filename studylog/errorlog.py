@@ -1,4 +1,4 @@
-"""오류 기록: logs/error.log.
+"""오류 기록: logs/error.log (exe로 실행하면 %APPDATA%/StudyLog/logs/error.log).
 
 pythonw로 실행하면 콘솔이 없어 오류 메시지가 사라지므로 파일에 남긴다.
 오류가 없으면 파일을 만들지 않는다.
@@ -9,9 +9,9 @@ from __future__ import annotations
 import sys
 import traceback
 from datetime import datetime
-from pathlib import Path
+from .core.storage import APP_HOME
 
-LOG_PATH = Path(__file__).resolve().parents[1] / "logs" / "error.log"
+LOG_PATH = APP_HOME / "logs" / "error.log"
 
 
 def _open_log():
