@@ -9,3 +9,6 @@ __pycache__/
 *.pyc
 .venv/
 .pytest_cache/
+
+# 디자인 참고 파일 (공개하지 않음)
+design/

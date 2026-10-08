@@ -67,3 +67,7 @@ studylog/ui/            화면 (CustomTkinter, matplotlib)
 tests/                  pytest
 tools/                  개발용 도구
 ```
+
+## 라이선스
+
+[MIT](LICENSE)
