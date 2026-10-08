@@ -17,6 +17,10 @@ LEGEND_MAX = 5          # 범례·도넛에 따로 보여 줄 과목 수. 나머
 OTHER_COLOR = "#9CA3AF"
 # 디자인은 120이지만 주간 화면 오른쪽 카드가 좁아 범례 이름 자리를 위해 조금 줄인다
 DONUT = 108
+# 주간·월간을 바꿔도 카드와 차트의 위치·크기가 그대로이도록 둘이 같은 값을 쓴다
+# (디자인은 주간 1.35fr / 월간 1.2fr, 차트 높이도 달랐다)
+TOP_WEIGHTS = (135, 100)
+CHART_H = 226
 TAG_COLORS = {          # 조언 카드 머리표 (배경, 글자) — 디자인 06의 색
     advice.PINK: ("#FCE7F3", "#BE185D"),
     advice.TEAL: ("#CCFBF1", "#0F766E"),
@@ -68,9 +72,8 @@ class AnalysisPage(Page):
         self._header(fmt.date_range(first, last) if week else fmt.month_title(today))
         top = ctk.CTkFrame(self._box, fg_color="transparent")
         top.pack(fill="x", pady=(20, 0))
-        # 디자인: 주간 1.35fr 1fr, 월간 1.2fr 1fr
-        top.grid_columnconfigure(0, weight=135 if week else 120, uniform="top")
-        top.grid_columnconfigure(1, weight=100, uniform="top")
+        top.grid_columnconfigure(0, weight=TOP_WEIGHTS[0], uniform="top")
+        top.grid_columnconfigure(1, weight=TOP_WEIGHTS[1], uniform="top")
         left, right = card(top), card(top)
         left.grid(row=0, column=0, sticky="nsew", padx=(0, 20))
         right.grid(row=0, column=1, sticky="nsew")
@@ -135,11 +138,13 @@ class AnalysisPage(Page):
         fig = charts.bar_chart(
             values,
             labels=list(fmt.WEEKDAYS),
+            # 월간의 '10/1–7'처럼 날짜 줄을 두어 두 차트의 막대 바닥선 높이를 같게 한다
+            sub_labels=[f"{d.month}/{d.day}" for d, _ in days],
             colors=[t.ACCENT if d == today else t.PRIMARY for d, _ in days],
             value_labels=[fmt.duration_short(v) if v else "" for v in values],
             empty_text=None if any(values) else "요일별 공부 시간이 여기에 표시돼요",
             bar_width=0.42)
-        self._place_chart(master, fig, height=210)
+        self._place_chart(master, fig, height=CHART_H)
 
     def _month_chart(self, master, sessions, today: date) -> None:
         weeks = stats.month_weeks(sessions, today)
@@ -156,7 +161,7 @@ class AnalysisPage(Page):
                           for v, (a, _, _) in zip(values, weeks)],
             empty_text=None if any(values) else "주차별 공부 시간이 여기에 표시돼요",
             bar_width=0.5)
-        self._place_chart(master, fig, height=226)
+        self._place_chart(master, fig, height=CHART_H)
 
     def _place_chart(self, master, fig, height: int) -> None:
         holder = ctk.CTkFrame(master, fg_color=t.SURFACE)
