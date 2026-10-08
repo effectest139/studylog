@@ -138,4 +138,4 @@ class GoalsPage(Page):
                 detail = f"목표 없음 · 이번 주 {fmt.duration(done, empty='0분')}"
             label(top, detail, 14, color=t.MUTED).pack(side="right")
             _bar(row, g.ratio, s.color, t.GRAY_100, 10).pack(fill="x", pady=(10, 0))
-        DragScroll(rows_box).attach()  # 과목이 많으면 빈 곳을 끌어서도 스크롤
+        DragScroll(rows_box, area=box).attach()  # 과목이 많으면 카드 안 빈 곳을 끌어서도 스크롤

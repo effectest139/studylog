@@ -204,7 +204,7 @@ class HistoryPage(Page):
                                               scrollbar_button_hover_color=t.BORDER_STRONG)
         self._scroll.pack(fill="both", expand=True, padx=(24, 8), pady=8)
         # 빈 곳을 누른 채 끌어도 스크롤된다. '삭제' 위에서 시작한 끌기는 무시(실수로 삭제되지 않게)
-        drag = DragScroll(self._scroll, ignore=lambda e: (
+        drag = DragScroll(self._scroll, area=box, ignore=lambda e: (
             isinstance(e.widget, DayBlock) and e.widget.on_delete_button()))
 
         today = date.today()
