@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 
 import customtkinter as ctk
 
-from ...core import fmt, stats
+from ...core import fmt, greeting, stats
 from ...core.colors import next_unused
 from ...core.models import Subject
 from ...core.store import MAX_SUBJECTS
@@ -36,15 +36,22 @@ class HomePage(Page):
             self._box.destroy()
         self._box = ctk.CTkFrame(self, fg_color="transparent")
         self._box.pack(fill="both", expand=True, padx=t.CONTENT_PAD, pady=t.CONTENT_PAD)
-        today = date.today()
+        now = datetime.now()
+        today = now.date()
         sessions = self.store.sessions
-        self._header(self._box, today, stats.streak(sessions, today))
+        self._header(self._box, now, sessions)
         self._summary(self._box, today, sessions)
         self._subjects(self._box)
 
-    # --- 인사말 + 연속일 ---
+    # --- 인사말(두 줄) + 날짜 + 연속일 ---
 
-    def _header(self, master, today: date, streak: int) -> None:
+    def _header(self, master, now: datetime, sessions) -> None:
+        today = now.date()
+        streak = stats.streak(sessions, today)
+        today_sec = stats.today_total(sessions, today)
+        goal = stats.goal_progress(stats.week_total(sessions, today), self.store.weekly_goal_minutes)
+        first, second = greeting.lines(self.store.name, now, today_sec, goal, self.app.greeting_picks)
+
         row = ctk.CTkFrame(master, fg_color="transparent")
         row.pack(fill="x")
         # 배지를 먼저 놓아야 이름이 길 때 배지가 눌리지 않고 인사말이 줄을 바꾼다
@@ -57,10 +64,12 @@ class HomePage(Page):
 
         left = ctk.CTkFrame(row, fg_color="transparent")
         left.pack(side="left", anchor="n", fill="x", expand=True)
-        title = label(left, f"안녕하세요, {self.store.name}님", 26, bold=True, justify="left")
+        title = label(left, first, 26, bold=True, justify="left")
         title.pack(anchor="w")
-        label(left, fmt.date_long(today), 14, color=t.MUTED).pack(anchor="w", pady=(6, 0))
-        _wrap_to_width(left, title)
+        status = label(left, second, 18, color=t.TEXT_SUB, justify="left")
+        status.pack(anchor="w", pady=(6, 0))
+        label(left, fmt.date_long(today), 13, color=t.MUTED).pack(anchor="w", pady=(8, 0))
+        _wrap_to_width(left, title, status)
 
     # --- 요약 3칸 ---
 
