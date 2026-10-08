@@ -58,6 +58,8 @@ class DataStore:
         self.data = data if data is not None else AppData()
         self._clock = clock
         self.recovered_backup: Path | None = None  # 깨진 파일을 옮겼으면 그 경로
+        # 데이터가 바뀔 때마다 1씩 는다. 화면은 이 값이 그대로면 다시 그리지 않아도 된다
+        self.revision = 0
 
     @classmethod
     def open(cls, path: Path = storage.DEFAULT_DATA_PATH, **kwargs) -> DataStore:
@@ -75,6 +77,7 @@ class DataStore:
             return store
 
     def _save(self) -> None:
+        self.revision += 1  # 파일 쓰기가 실패해도 메모리의 데이터는 이미 바뀌었다
         storage.save(self.data, self.path)
 
     def _new_id(self, prefix: str, taken: Iterable[str]) -> str:

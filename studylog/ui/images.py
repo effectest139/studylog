@@ -8,7 +8,7 @@ from __future__ import annotations
 from functools import lru_cache
 
 import customtkinter as ctk
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageTk
 
 _SUPER = 8   # 이 배율로 크게 그린 뒤
 _KEEP = 3    # 이 배율까지만 줄여 둔다(Windows 배율 확대에도 선명하게)
@@ -32,3 +32,12 @@ def color_swatch(color: str, selected: bool, used: bool, size: int = 40, inner: 
         draw.ellipse((c - r, c - r, c + r, c + r), fill="#FFFFFF")
     small = img.resize((size * _KEEP, size * _KEEP), Image.LANCZOS)
     return ctk.CTkImage(light_image=small, dark_image=small, size=(size, size))
+
+
+@lru_cache(maxsize=None)
+def dot_photo(color: str, px: int) -> ImageTk.PhotoImage:
+    """tk.Label에 넣는 색 점(px는 배율을 적용한 실제 픽셀). 기록 목록처럼 많이 쓰는 곳용."""
+    big = px * _SUPER
+    img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
+    ImageDraw.Draw(img).ellipse((0, 0, big - 1, big - 1), fill=color)
+    return ImageTk.PhotoImage(img.resize((px, px), Image.LANCZOS))

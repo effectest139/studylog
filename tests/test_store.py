@@ -122,6 +122,18 @@ def test_delete_session(store, path):
         store.delete_session(a.id)
 
 
+def test_revision_changes_only_when_data_changes(store):
+    sid = subject_id(store, "수학")
+    before = store.revision
+    store.sessions, store.subjects, store.count_sessions(sid)  # 읽기만 하면 그대로
+    assert store.revision == before
+    store.add_session(sid, T0, T0 + timedelta(hours=1), 3600)
+    assert store.revision == before + 1
+    with pytest.raises(ValidationError):  # 거부된 변경도 그대로
+        store.add_session(sid, T0, T0 + timedelta(seconds=30), 30)
+    assert store.revision == before + 1
+
+
 def test_goals(store, path):
     math = subject_id(store, "수학")
     store.set_goals(720, {math: 900})  # 과목 합계가 전체보다 커도 저장된다

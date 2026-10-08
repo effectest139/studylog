@@ -2,19 +2,116 @@
 
 from __future__ import annotations
 
+import tkinter as tk
 from datetime import date
 
 import customtkinter as ctk
 
 from ...core import fmt, stats
 from ...core.models import Session
+from .. import images
 from .. import theme as t
 from ..dialogs.confirm import ConfirmDialog
-from ..widgets.common import Button, Dot, card, elide, hline, label
+from ..widgets.common import Button, card, elide, label, widget_scaling
 from .base import Page
 
 DAYS_PER_LOAD = 14  # 처음엔 최근 14일만 그리고 '더 보기'로 늘린다(위젯이 많으면 느려짐)
 SUBJECT_W = 80
+
+HEAD_H = 40
+ROW_H = 44
+
+
+class DayBlock(tk.Canvas):
+    """날짜 하나(머리줄 + 기록 줄들)를 캔버스 하나에 그린다.
+
+    줄마다 CTk 위젯(프레임·라벨·점·버튼)을 만들면 14일치에 위젯이 500개 가까이 되고,
+    위젯 하나하나가 따로 그려져 기록 화면을 여는 데 1.7초쯤 걸렸다. 캔버스의 글자·도형은 가벼워서 빠르다.
+    캔버스는 배율을 자동으로 곱하지 않으므로 크기·글꼴은 _px()로 바꿔 쓴다.
+    """
+
+    def __init__(self, master, scale: float, day: date, items: list[Session], total: int,
+                 today: date, subjects: dict, on_delete):
+        self._scale = scale
+        px = self._px
+        super().__init__(master, height=px(HEAD_H + len(items) * (ROW_H + 1)), bg=t.SURFACE,
+                         bd=0, highlightthickness=0)
+        self._right: list[tuple[int, int, str]] = []  # (항목, 오른쪽 끝에서 떨어진 거리, 'x'|'line')
+        self._hover_tag: str | None = None
+
+        mid = px(HEAD_H) / 2
+        self._text(0, mid, fmt.date_short(day, today), 15, bold=True)
+        # '합계 1시간 25분' — 숫자만 굵은 주색
+        amount = self._text(0, mid, fmt.duration(total), 14, bold=True, color=t.PRIMARY, right=0)
+        self._text(0, mid, "합계 ", 14, color=t.MUTED, right=self._width_of(amount))
+
+        y = px(HEAD_H)
+        for i, session in enumerate(items):
+            line = self.create_line(0, y, 0, y, fill=t.DIVIDER)
+            self._right.append((line, 0, "line"))
+            self._row(y + 1, session, subjects[session.subject_id], f"del{i}", on_delete)
+            y += px(ROW_H + 1)
+        self.bind("<Configure>", self._place_right)
+
+    def _px(self, value: float) -> int:
+        return round(value * self._scale)
+
+    def _text(self, x: float, y: float, text: str, size: int, bold: bool = False, color: str = t.TEXT,
+              right: int | None = None, tags: str = "") -> int:
+        """right를 주면 오른쪽 끝에서 right만큼 떨어진 곳에 오른쪽 정렬로 놓는다."""
+        item = self.create_text(x, y, text=text, fill=color, anchor="e" if right is not None else "w",
+                                font=t.font(size, bold).create_scaled_tuple(self._scale), tags=tags)
+        if right is not None:
+            self._right.append((item, right, "x"))
+        return item
+
+    def _width_of(self, item: int) -> int:
+        x1, _, x2, _ = self.bbox(item)
+        return x2 - x1
+
+    def _row(self, top: int, session: Session, subject, tag: str, on_delete) -> None:
+        px = self._px
+        mid = top + px(ROW_H) / 2
+        self.create_image(px(5), mid, image=images.dot_photo(subject.color, px(10)))
+        name = elide(t.font(15), subject.name, SUBJECT_W - 4)
+        self._text(px(22), mid, name, 15)
+        self._text(px(22 + SUBJECT_W + 12), mid, fmt.time_range(session.start, session.end), 14,
+                   color=t.MUTED)
+
+        # '삭제': 올리면 빨간 글자 + 연한 빨강 배경
+        del_w, del_h = px(44), px(28)
+        bg = self.create_rectangle(0, mid - del_h / 2, 0, mid + del_h / 2, fill=t.SURFACE, outline="",
+                                   tags=(tag, tag + "bg"))
+        self._right.append((bg, del_w, "rect"))
+        word = self._text(0, mid, "삭제", 13, color=t.FAINT, right=del_w // 2, tags=tag)
+        self.itemconfigure(word, anchor="center", tags=(tag, tag + "fg"))
+        self._text(0, mid, fmt.duration(session.study_seconds), 15, bold=True, right=del_w + px(12))
+
+        self.tag_bind(tag, "<Enter>", lambda e: self._set_hover(tag))
+        self.tag_bind(tag, "<Leave>", lambda e: self._set_hover(None))
+        self.tag_bind(tag, "<Button-1>", lambda e: (self._set_hover(None), on_delete(session, subject)))
+
+    def _set_hover(self, tag: str | None) -> None:
+        if self._hover_tag and self.winfo_exists():
+            self.itemconfigure(self._hover_tag + "bg", fill=t.SURFACE)
+            self.itemconfigure(self._hover_tag + "fg", fill=t.FAINT)
+        self._hover_tag = tag
+        if tag:
+            self.itemconfigure(tag + "bg", fill=t.DANGER_SOFT)
+            self.itemconfigure(tag + "fg", fill=t.DANGER)
+        self.configure(cursor="hand2" if tag else "")
+
+    def _place_right(self, event) -> None:
+        """폭이 정해지거나 바뀌면 오른쪽 정렬 항목을 옮긴다."""
+        w = event.width
+        for item, offset, kind in self._right:
+            coords = self.coords(item)
+            if kind == "line":
+                self.coords(item, 0, coords[1], w, coords[3])
+            elif kind == "rect":
+                self.coords(item, w - offset, coords[1], w, coords[3])
+            else:
+                self.coords(item, w - offset, coords[1])
 
 
 class HistoryPage(Page):
@@ -23,14 +120,27 @@ class HistoryPage(Page):
         self._box: ctk.CTkFrame | None = None
         self._scroll: ctk.CTkScrollableFrame | None = None
         self._days_shown = DAYS_PER_LOAD
+        self._drawn_for: tuple | None = None  # 지금 화면을 그린 기준(데이터 변경 번호, 오늘 날짜)
+
+    def _state(self) -> tuple:
+        # 날짜가 바뀌면 '· 오늘' 표시가 달라지므로 오늘 날짜도 기준에 넣는다
+        return self.app.store.revision, date.today()
 
     def refresh(self) -> None:
-        """사이드바에서 들어올 때: 처음 14일부터 다시 보여 준다."""
+        """사이드바에서 들어올 때: 처음 14일부터 다시 보여 준다.
+
+        기록이 그대로이고 '더 보기'도 누르지 않았으면 만들어 둔 화면을 맨 위로 올려 다시 쓴다.
+        """
+        if (self._box is not None and self._drawn_for == self._state()
+                and self._days_shown == DAYS_PER_LOAD):
+            self._set_scroll_pos(0.0)
+            return
         self._days_shown = DAYS_PER_LOAD
         self._render()
 
     def _render(self, keep_scroll: bool = False) -> None:
         pos = self._scroll_pos() if keep_scroll else 0.0
+        self._drawn_for = self._state()
         if self._box is not None:
             self._box.destroy()
         self._box = ctk.CTkFrame(self, fg_color="transparent")
@@ -71,48 +181,16 @@ class HistoryPage(Page):
         self._scroll.pack(fill="both", expand=True, padx=(24, 8), pady=8)
 
         today = date.today()
+        scale = widget_scaling(self)
+        subjects = {s.id: s for s in self.app.store.subjects}
         for i, (day, items, total) in enumerate(shown):
-            self._day(self._scroll, day, items, total, today, first=i == 0)
+            block = DayBlock(self._scroll, scale, day, items, total, today, subjects, self._confirm_delete)
+            # 캔버스(tk 위젯)는 pack 여백에도 배율이 곱해지지 않는다
+            block.pack(fill="x", padx=(0, round(16 * scale)),
+                       pady=(round((4 if i == 0 else 12) * scale), round(12 * scale)))
         if has_more:
             Button(self._scroll, "더 보기", kind="secondary", height=40, size=14,
                    command=self._load_more).pack(fill="x", padx=(0, 16), pady=(12, 12))
-
-    def _day(self, master, day: date, items: list[Session], total: int, today: date, first: bool) -> None:
-        box = ctk.CTkFrame(master, fg_color="transparent")
-        box.pack(fill="x", padx=(0, 16), pady=(4 if first else 12, 12))
-        head = ctk.CTkFrame(box, fg_color="transparent", height=40)
-        head.pack(fill="x")
-        head.pack_propagate(False)
-        label(head, fmt.date_short(day, today), 15, bold=True).pack(side="left")
-        # '합계 1시간 25분' — 숫자만 굵은 주색
-        label(head, fmt.duration(total), 14, bold=True, color=t.PRIMARY).pack(side="right")
-        label(head, "합계 ", 14, color=t.MUTED).pack(side="right")
-
-        subjects = {s.id: s for s in self.app.store.subjects}
-        for session in items:
-            hline(box, t.DIVIDER).pack(fill="x")
-            self._item(box, session, subjects[session.subject_id])
-
-    def _item(self, master, session: Session, subject) -> None:
-        row = ctk.CTkFrame(master, fg_color="transparent", height=44)
-        row.pack(fill="x")
-        row.pack_propagate(False)
-        Dot(row, subject.color, size=10).pack(side="left", padx=(0, 12))
-        name_font = t.font(15)
-        name_box = ctk.CTkFrame(row, fg_color="transparent", width=SUBJECT_W, height=44)
-        name_box.pack(side="left")
-        name_box.pack_propagate(False)
-        label(name_box, elide(name_font, subject.name, SUBJECT_W - 4), 15).pack(side="left")
-        label(row, fmt.time_range(session.start, session.end), 14, color=t.MUTED).pack(
-            side="left", padx=(12, 0))
-
-        delete = ctk.CTkButton(row, text="삭제", width=44, height=28, corner_radius=6, border_width=0,
-                               fg_color="transparent", hover_color=t.DANGER_SOFT, text_color=t.FAINT,
-                               font=t.font(13), command=lambda: self._confirm_delete(session, subject))
-        delete.pack(side="right", padx=(12, 0))
-        delete.bind("<Enter>", lambda e: delete.configure(text_color=t.DANGER), add="+")
-        delete.bind("<Leave>", lambda e: delete.configure(text_color=t.FAINT), add="+")
-        label(row, fmt.duration(session.study_seconds), 15, bold=True).pack(side="right")
 
     def _load_more(self) -> None:
         self._days_shown += DAYS_PER_LOAD
@@ -139,7 +217,7 @@ class HistoryPage(Page):
 
     def _set_scroll_pos(self, pos: float) -> None:
         canvas = getattr(self._scroll, "_parent_canvas", None)
-        if canvas is not None:
+        if canvas is not None and self._scroll.winfo_exists():
             canvas.yview_moveto(pos)
 
     # --- 05-E 빈 화면 ---
